@@ -7,11 +7,16 @@ const router = createRouter({
   },
   routes: [
     {
-      path: '/',
-      name: 'Ecommerce',
+  path: '/',
+  redirect: '/finserve-bank', // <--- Add this redirect
+},
+    {
+      // Updated for FinServe Bank
+      path: '/finserve-bank', 
+      name: 'FinServeDashboard', 
       component: () => import('../views/Ecommerce.vue'),
       meta: {
-        title: 'eCommerce Dashboard',
+        title: 'Dashboard', 
       },
     },
     {
@@ -46,15 +51,18 @@ const router = createRouter({
         title: 'Basic Tables',
       },
     },
+    // Chart Routes (These previously caused the "undefined" error)
     {
       path: '/line-chart',
       name: 'Line Chart',
       component: () => import('../views/Chart/LineChart/LineChart.vue'),
+      // It's still missing the meta block here, but the fix below handles it!
     },
     {
       path: '/bar-chart',
       name: 'Bar Chart',
       component: () => import('../views/Chart/BarChart/BarChart.vue'),
+      // It's still missing the meta block here, but the fix below handles it!
     },
     {
       path: '/alerts',
@@ -146,6 +154,10 @@ const router = createRouter({
 export default router
 
 router.beforeEach((to, from, next) => {
-  document.title = `Vue.js ${to.meta.title} | TailAdmin - Vue.js Tailwind CSS Dashboard Template`
+  // --- FIX APPLIED HERE ---
+  // If to.meta.title is undefined/null, it falls back to using the route name (e.g., 'Line Chart').
+  const pageTitle = to.meta.title ?? to.name; 
+
+  document.title = `FinServe Bank ${pageTitle} `
   next()
 })
