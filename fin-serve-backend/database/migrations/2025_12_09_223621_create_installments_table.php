@@ -9,13 +9,19 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('installments', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
-    }
+    public function up()
+{
+    Schema::create('installments', function (Blueprint $table) {
+        $table->id('id');
+        $table->foreignId('loan_id')->constrained('loans','id')->cascadeOnDelete();
+        $table->date('due_date');
+        $table->decimal('amount_due', 12, 2);
+        $table->decimal('amount_paid', 12, 2)->nullable();
+        $table->enum('status', ['Pending','Paid','Overdue'])->default('Pending');
+        $table->timestamps();
+    });
+}
+
 
     /**
      * Reverse the migrations.

@@ -9,13 +9,20 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('approval_steps', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
-    }
+  public function up()
+{
+    Schema::create('approval_steps', function (Blueprint $table) {
+        $table->id('id');
+        $table->foreignId('approval_id')->constrained('approvals','id')->cascadeOnDelete();
+        $table->integer('step_number');
+        $table->foreignId('role_id')->constrained('roles','id');
+        $table->enum('status', ['Pending','Approved','Rejected'])->default('Pending');
+        $table->boolean('required')->default(true);
+        $table->dateTime('approved_at')->nullable();
+        $table->timestamps();
+    });
+}
+
 
     /**
      * Reverse the migrations.

@@ -9,13 +9,22 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('customers', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        $table->id('id');
+        $table->foreignId('user_id')->constrained('users','id')->cascadeOnDelete();
+        $table->string('first_name');
+        $table->string('last_name');
+        $table->date('dob')->nullable();
+        $table->string('phone');
+        $table->string('email')->nullable();
+        $table->string('address')->nullable();
+        $table->string('id_number')->nullable();
+        $table->timestamps();
         });
     }
+
 
     /**
      * Reverse the migrations.

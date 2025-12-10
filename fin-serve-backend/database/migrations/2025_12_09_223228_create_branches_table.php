@@ -9,13 +9,18 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('branches', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
-    }
+   public function up()
+{
+    Schema::create('branches', function (Blueprint $table) {
+        $table->id('id');
+        $table->string('branch_name');
+        $table->string('location');
+        $table->foreignId('manager_id')->nullable()->constrained('users','id')->nullOnDelete();
+        $table->string('contact')->nullable();
+        $table->timestamps();
+    });
+}
+
 
     /**
      * Reverse the migrations.

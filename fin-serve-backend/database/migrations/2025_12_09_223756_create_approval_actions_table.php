@@ -9,13 +9,18 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('approval_actions', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
-    }
+  public function up()
+{
+    Schema::create('approval_actions', function (Blueprint $table) {
+        $table->id('id');
+        $table->foreignId('approval_step_id')->constrained('approval_steps','id')->cascadeOnDelete();
+        $table->foreignId('approved_by')->constrained('users','id')->cascadeOnDelete();
+        $table->enum('action', ['Approved','Rejected']);
+        $table->text('comments')->nullable();
+        $table->timestamps();
+    });
+}
+
 
     /**
      * Reverse the migrations.

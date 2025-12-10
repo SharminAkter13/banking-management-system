@@ -9,13 +9,18 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('loan_types', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
-    }
+   public function up()
+{
+    Schema::create('loan_types', function (Blueprint $table) {
+        $table->id('id');
+        $table->string('name');
+        $table->string('description')->nullable();
+        $table->decimal('interest_rate', 5, 2);
+        $table->decimal('max_amount', 12, 2)->nullable();
+        $table->timestamps();
+    });
+}
+
 
     /**
      * Reverse the migrations.

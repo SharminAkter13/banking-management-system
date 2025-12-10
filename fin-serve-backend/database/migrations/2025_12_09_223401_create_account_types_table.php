@@ -9,13 +9,16 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('account_types', function (Blueprint $table) {
-            $table->id();
+            $table->id('id');
+            $table->string('account_name');
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }
+
 
     /**
      * Reverse the migrations.
