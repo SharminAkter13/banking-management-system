@@ -27,7 +27,7 @@
 
           <!-- CTA Button -->
           <button class="mt-4 lg:mt-0 bg-white text-gray-800 font-semibold px-6 py-2 rounded-full shadow hover:scale-105 transition">
-            Action
+            Login
           </button>
       </div>
 
@@ -37,7 +37,7 @@
 
 <script setup>
 import { onMounted } from "vue";
-import setupMobileMenu from "../assets/js/menu.js";
+import setupMobileMenu from "../../assets/js/menu.js";
 
 onMounted(() => {
   setupMobileMenu();

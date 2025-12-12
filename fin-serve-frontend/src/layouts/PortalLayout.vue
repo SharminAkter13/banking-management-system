@@ -12,6 +12,6 @@
 </template>
 
 <script setup>
-import Navbar from "../components/Navbar.vue";
-import Footer from "../components/Footer.vue";
+import Navbar from "../components/portals/Navbar.vue";
+import Footer from "../components/portals/Footer.vue";
 </script>
