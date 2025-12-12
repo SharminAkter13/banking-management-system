@@ -2,23 +2,35 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+
   scrollBehavior(to, from, savedPosition) {
     return savedPosition || { left: 0, top: 0 }
   },
+
   routes: [
+
+    // ============= PORTAL (ROOT PAGE) =============
     {
-  path: '/',
-  redirect: '/finserve-bank', // <--- Add this redirect
-},
-    {
-      // Updated for FinServe Bank
-      path: '/finserve-bank', 
-      name: 'FinServeDashboard', 
-      component: () => import('../views/Ecommerce.vue'),
+      path: '/',
+      name: 'Home',
+      component: () => import('../views/portal_page/Home.vue'),
       meta: {
-        title: 'Dashboard', 
+        title: 'Home',
+        public: true,
       },
     },
+
+    // ============= DASHBOARD =============
+    {
+      path: '/finserve-bank',
+      name: 'FinServeDashboard',
+      component: () => import('../views/Ecommerce.vue'),
+      meta: {
+        title: 'Dashboard',
+      },
+    },
+
+    // ============= CALENDAR =============
     {
       path: '/calendar',
       name: 'Calendar',
@@ -27,6 +39,8 @@ const router = createRouter({
         title: 'Calendar',
       },
     },
+
+    // ============= PROFILE =============
     {
       path: '/profile',
       name: 'Profile',
@@ -35,6 +49,8 @@ const router = createRouter({
         title: 'Profile',
       },
     },
+
+    // ============= FORMS =============
     {
       path: '/form-elements',
       name: 'Form Elements',
@@ -43,6 +59,8 @@ const router = createRouter({
         title: 'Form Elements',
       },
     },
+
+    // ============= TABLES =============
     {
       path: '/basic-tables',
       name: 'Basic Tables',
@@ -51,19 +69,26 @@ const router = createRouter({
         title: 'Basic Tables',
       },
     },
-    // Chart Routes (These previously caused the "undefined" error)
+
+    // ============= CHARTS =============
     {
       path: '/line-chart',
       name: 'Line Chart',
       component: () => import('../views/Chart/LineChart/LineChart.vue'),
-      // It's still missing the meta block here, but the fix below handles it!
+      meta: {
+        title: 'Line Chart',
+      },
     },
     {
       path: '/bar-chart',
       name: 'Bar Chart',
       component: () => import('../views/Chart/BarChart/BarChart.vue'),
-      // It's still missing the meta block here, but the fix below handles it!
+      meta: {
+        title: 'Bar Chart',
+      },
     },
+
+    // ============= UI ELEMENTS =============
     {
       path: '/alerts',
       name: 'Alerts',
@@ -88,7 +113,6 @@ const router = createRouter({
         title: 'Badge',
       },
     },
-
     {
       path: '/buttons',
       name: 'Buttons',
@@ -97,7 +121,6 @@ const router = createRouter({
         title: 'Buttons',
       },
     },
-
     {
       path: '/images',
       name: 'Images',
@@ -114,15 +137,18 @@ const router = createRouter({
         title: 'Videos',
       },
     },
+
+    // ============= PAGES =============
     {
       path: '/blank',
       name: 'Blank',
       component: () => import('../views/Pages/BlankPage.vue'),
       meta: {
-        title: 'Blank',
+        title: 'Blank Page',
       },
     },
 
+    // ============= ERRORS =============
     {
       path: '/error-404',
       name: '404 Error',
@@ -132,6 +158,7 @@ const router = createRouter({
       },
     },
 
+    // ============= AUTH =============
     {
       path: '/signin',
       name: 'Signin',
@@ -153,11 +180,9 @@ const router = createRouter({
 
 export default router
 
+// ============= PAGE TITLE HANDLER =============
 router.beforeEach((to, from, next) => {
-  // --- FIX APPLIED HERE ---
-  // If to.meta.title is undefined/null, it falls back to using the route name (e.g., 'Line Chart').
-  const pageTitle = to.meta.title ?? to.name; 
-
-  document.title = `FinServe Bank ${pageTitle} `
+  const pageTitle = to.meta.title ?? to.name ?? 'FinServe Bank'
+  document.title = `FinServe Bank — ${pageTitle}`
   next()
 })

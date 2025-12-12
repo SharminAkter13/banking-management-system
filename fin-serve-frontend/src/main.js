@@ -4,6 +4,7 @@ import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import 'jsvectormap/dist/jsvectormap.css'
 import 'flatpickr/dist/flatpickr.css'
+import './assets/css/gradient.css';
 
 import { createApp } from 'vue'
 import App from './App.vue'
