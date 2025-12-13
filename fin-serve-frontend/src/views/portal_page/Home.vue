@@ -4,36 +4,32 @@ import PortalLayout from "../../layouts/PortalLayout.vue";
 
 <template>
   <PortalLayout>
-    <!-- HERO SECTION -->
     <div class="pt-24">
       <div class="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center">
         
-        <!-- Left Text -->
         <div class="flex flex-col w-full md:w-2/5 justify-center items-start text-center md:text-left">
-          <p class="uppercase tracking-loose w-full">What business are you?</p>
+          <p class="uppercase tracking-loose w-full">Manage, Track, and Grow</p>
 
           <h1 class="my-4 text-5xl font-bold leading-tight">
-            Main Hero Message to sell yourself!
+            The Intuitive Platform for Modern Financial Management
           </h1>
 
           <p class="leading-normal text-2xl mb-8">
-            Sub-hero message, not too long and not too short. Make it just right!
+            Centralize your accounts, automate compliance, and empower your team with intelligent financial tools.
           </p>
 
           <button
             class="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg transform transition hover:scale-105 duration-300 ease-in-out">
-            Subscribe
+            Request Demo
           </button>
         </div>
 
-        <!-- Right Image -->
         <div class="w-full md:w-3/5 py-6 text-center">
           <img class="w-full md:w-4/5 z-50" :src="'/hero.png'" alt="Hero Image" />
         </div>
       </div>
     </div>
 
-    <!-- SVG WAVE -->
     <div class="relative -mt-12 lg:-mt-24">
       <svg viewBox="0 0 1428 174" xmlns="http://www.w3.org/2000/svg">
         <g fill="none" fill-rule="evenodd">
@@ -53,23 +49,19 @@ import PortalLayout from "../../layouts/PortalLayout.vue";
       </svg>
     </div>
 
-    <!-- CONTENT SECTIONS -->
     <section class="bg-white border-b py-8">
       <div class="container max-w-5xl mx-auto m-8">
 
-        <h2 class="text-5xl font-bold text-center text-gray-800">Title</h2>
+        <h2 class="text-5xl font-bold text-center text-gray-800">System Capabilities</h2>
         <div class="h-1 mx-auto gradient w-64 opacity-25 rounded-t my-4"></div>
 
         <div class="flex flex-wrap">
           <div class="w-5/6 sm:w-1/2 p-6">
             <h3 class="text-3xl text-gray-800 font-bold mb-3">
-              Lorem ipsum dolor sit amet
+              Comprehensive Account Management
             </h3>
             <p class="text-gray-600 mb-8">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              <br><br>
-              Images from:
-              <a class="text-pink-500 underline" href="https://undraw.co/">undraw.co</a>
+              Handle deposits, withdrawals, interest accruals, and ledger history for all customer account types—checking, savings, and fixed deposits—from one centralized dashboard.
             </p>
           </div>
 
@@ -80,64 +72,76 @@ import PortalLayout from "../../layouts/PortalLayout.vue";
           </div>
         </div>
 
+        <div class="flex flex-wrap flex-col-reverse sm:flex-row">
+            <div class="w-full sm:w-1/2 p-6 mt-6">
+                <svg class="w-full sm:h-64 mx-auto" viewBox="0 0 1177 598.5">
+                    <rect x="250" y="50" width="677" height="400" rx="20" fill="#3f3d56" />
+                </svg>
+            </div>
+            <div class="w-full sm:w-1/2 p-6 mt-6">
+                <h3 class="text-3xl text-gray-800 font-bold mb-3">
+                    Automated Loan Processing and Tracking
+                </h3>
+                <p class="text-gray-600 mb-8">
+                    Streamline the entire lending lifecycle, from application and credit scoring to repayment schedules and late fee management, minimizing manual overhead.
+                </p>
+            </div>
+        </div>
+
       </div>
     </section>
 
-    <!-- PRICING -->
     <section class="bg-gray-100 py-8">
       <div class="container mx-auto px-2 pb-12">
-        <h2 class="text-5xl font-bold text-center text-gray-800">Pricing</h2>
+        <h2 class="text-5xl font-bold text-center text-gray-800">Licensing Tiers</h2>
         <div class="h-1 mx-auto gradient w-64 opacity-25 my-4 rounded-t"></div>
 
         <div class="flex flex-col sm:flex-row justify-center pt-12">
 
-          <!-- Free -->
           <div class="flex flex-col w-5/6 lg:w-1/4 bg-white rounded-lg shadow mx-2 p-6">
-            <div class="text-3xl font-bold text-center border-b pb-4">Free</div>
+            <div class="text-3xl font-bold text-center border-b pb-4">Standard Core</div>
             <ul class="text-center text-sm my-4">
-              <li class="border-b py-4">Thing</li>
-              <li class="border-b py-4">Thing</li>
-              <li class="border-b py-4">Thing</li>
+              <li class="border-b py-4">Up to 500 Active Accounts</li>
+              <li class="border-b py-4">Basic Transaction Module</li>
+              <li class="border-b py-4">Standard Reporting Suite</li>
             </ul>
             <div class="text-3xl text-gray-600 font-bold text-center pt-6">
-              £0 <span class="text-base">for one user</span>
+              £x,000 <span class="text-base">Annual Fee</span>
             </div>
             <button class="gradient text-white rounded-full px-8 py-4 font-bold mx-auto mt-6">
-              Sign Up
+              Inquire
             </button>
           </div>
 
-          <!-- Basic -->
           <div class="flex flex-col w-5/6 lg:w-1/3 bg-white rounded-lg shadow-xl mx-2 p-6 -mt-6 z-10">
-            <div class="text-3xl font-bold text-center">Basic</div>
+            <div class="text-3xl font-bold text-center">Enterprise Plus</div>
             <div class="gradient h-1 w-full rounded-t my-4"></div>
             <ul class="text-center font-bold">
-              <li class="border-b py-4">Thing</li>
-              <li class="border-b py-4">Thing</li>
-              <li class="border-b py-4">Thing</li>
-              <li class="border-b py-4">Thing</li>
+              <li class="border-b py-4">Unlimited Accounts</li>
+              <li class="border-b py-4">Advanced Loan/Mortgage Module</li>
+              <li class="border-b py-4">Full Regulatory Compliance Tools</li>
+              <li class="border-b py-4">24/7 Dedicated Support</li>
             </ul>
             <div class="text-3xl text-gray-600 font-bold text-center pt-6">
-              £x.99 <span class="text-base">/ month</span>
+              Custom <span class="text-base">/ Quote</span>
             </div>
             <button class="gradient text-white rounded-full px-8 py-4 font-bold mx-auto mt-6">
-              Sign Up
+              Contact Sales
             </button>
           </div>
 
-          <!-- Pro -->
           <div class="flex flex-col w-5/6 lg:w-1/4 bg-white rounded-lg shadow mx-2 p-6">
-            <div class="text-3xl font-bold text-center border-b pb-4">Pro</div>
+            <div class="text-3xl font-bold text-center border-b pb-4">Modular Add-ons</div>
             <ul class="text-center text-sm my-4">
-              <li class="border-b py-4">Thing</li>
-              <li class="border-b py-4">Thing</li>
-              <li class="border-b py-4">Thing</li>
+              <li class="border-b py-4">Online Banking Portal</li>
+              <li class="border-b py-4">KYC & AML Automation</li>
+              <li class="border-b py-4">Advanced Data Analytics</li>
             </ul>
             <div class="text-3xl text-gray-600 font-bold text-center pt-6">
-              £x.99 <span class="text-base">/ month</span>
+              £x.99 <span class="text-base">/ module</span>
             </div>
             <button class="gradient text-white rounded-full px-8 py-4 font-bold mx-auto mt-6">
-              Sign Up
+              View Modules
             </button>
           </div>
 
@@ -145,10 +149,47 @@ import PortalLayout from "../../layouts/PortalLayout.vue";
       </div>
     </section>
 
+    <svg class="wave-top" viewBox="0 0 1439 147" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(-1.000000, -14.000000)" fill-rule="nonzero">
+          <g class="wave" fill="#f3f4f6">
+            <path
+              d="M1440,84 C1383.555,64.3 1342.555,51.3 1317,45 C1259.5,30.824 1206.707,25.526 1169,22 C1129.711,18.326 1044.426,18.475 980,22 C954.25,23.409 922.25,26.742 884,32 C845.122,37.787 818.455,42.121 804,45 C776.833,50.41 728.136,61.77 713,65 C660.023,76.309 621.544,87.729 584,94 C517.525,105.104 484.525,106.438 429,108 C379.49,106.484 342.823,104.484 319,102 C278.571,97.783 231.737,88.736 205,84 C154.629,75.076 86.296,57.743 0,32 L0,0 L1440,0 L1440,84 Z"
+            ></path>
+          </g>
+          <g transform="translate(1.000000, 15.000000)" fill="#FFFFFF">
+            <g transform="translate(719.500000, 68.500000) rotate(-180.000000) translate(-719.500000, -68.500000) ">
+              <path d="M0,0 C90.7283404,0.927527913 147.912752,27.187927 291.910178,59.9119003 C387.908462,81.7278826 543.605069,89.334785 759,82.7326078 C469.336065,156.254352 216.336065,153.6679 0,74.9732496" opacity="0.100000001"></path>
+              <path
+                d="M100,104.708498 C277.413333,72.2345949 426.147877,52.5246657 546.203633,45.5787101 C666.259389,38.6327546 810.524845,41.7979068 979,55.0741668 C931.069965,56.122511 810.303266,74.8455141 616.699903,111.243176 C423.096539,147.640838 250.863238,145.462612 100,104.708498 Z"
+                opacity="0.100000001"
+              ></path>
+              <path d="M1046,51.6521276 C1130.83045,29.328812 1279.08318,17.607883 1439,40.1656806 L1439,120 C1271.17211,77.9435312 1140.17211,55.1609071 1046,51.6521276 Z" opacity="0.200000003"></path>
+            </g>
+          </g>
+        </g>
+      </g>
+    </svg>
+    <section class="container mx-auto text-center py-6 mb-12">
+      <h2 class="w-full my-2 text-5xl font-bold leading-tight text-center text-white">
+        Start Transforming Your Banking Operations
+      </h2>
+      <div class="w-full mb-4">
+        <div class="h-1 mx-auto bg-white w-1/6 opacity-25 my-0 py-0 rounded-t"></div>
+      </div>
+      <h3 class="my-4 text-3xl leading-tight">
+        Schedule a personalized consultation today.
+      </h3>
+      <button class="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+        Get a Quote
+      </button>
+    </section>
+
   </PortalLayout>
 </template>
 
 <style scoped>
+/* Gradient kept as original */
 .gradient {
   background: linear-gradient(90deg, #d53369 0%, #daae51 100%);
 }
