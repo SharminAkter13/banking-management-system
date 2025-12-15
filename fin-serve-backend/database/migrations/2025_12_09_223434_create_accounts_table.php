@@ -16,7 +16,7 @@ return new class extends Migration
         $table->foreignId('customer_id')->constrained('customers','id')->cascadeOnDelete();
         $table->foreignId('branch_id')->constrained('branches','id')->cascadeOnDelete();
         $table->foreignId('account_type_id')->constrained('account_types','id');
-        $table->foreignId('account_status_id')->constrained('account_status','id');
+        $table->foreignId('account_status_id')->constrained('account_statuses','id');
         $table->decimal('balance', 12, 2)->default(0);
         $table->dateTime('opened_date');
         $table->dateTime('closed_date')->nullable();
