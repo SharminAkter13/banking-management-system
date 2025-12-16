@@ -1,4 +1,24 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import api from '@/services/api';
+
+router.beforeEach(async (to, from, next) => {
+  const token = localStorage.getItem('token');
+
+  if (!to.meta.public && !token) {
+    return next('/login');
+  }
+
+  if (to.meta.roles) {
+    const res = await api.get('/me');
+    const role = res.data.role.slug;
+
+    if (!to.meta.roles.includes(role)) {
+      return next('/error-404');
+    }
+  }
+
+  next();
+});
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -6,6 +26,7 @@ const router = createRouter({
   scrollBehavior(to, from, savedPosition) {
     return savedPosition || { left: 0, top: 0 }
   },
+  
 
   routes: [
 
@@ -20,6 +41,26 @@ const router = createRouter({
       },
     },
 
+     // ============= AUTH (PUBLIC) =============
+    {
+      path: '/login',
+      name: 'Login',
+      component: () => import('../views/Auth/Login.vue'),
+      meta: {
+        title: 'Login',
+        public: true,
+      },
+    },
+    {
+      path: '/register',
+      name: 'Register',
+      component: () => import('../views/Auth/Register.vue'),
+      meta: {
+        title: 'Register',
+        public: true,
+      },
+    },
+
     // ============= DASHBOARD =============
     {
       path: '/finserve-bank',
@@ -29,6 +70,33 @@ const router = createRouter({
         title: 'Dashboard',
       },
     },
+
+    {
+  path: '/admin/dashboard',
+  component: () => import('@/views/dashboard/adminDash.vue'),
+  meta: { requiresAuth: true, roles: ['admin'] },
+},
+{
+  path: '/branch-manager/dashboard',
+  component: () => import('@/views/dashboard/ManagerDash.vue'),
+  meta: { requiresAuth: true, roles: ['branch-manager'] },
+},
+{
+  path: '/loan-officer/dashboard',
+  component: () => import('@/views/dashboard/OfficerDash.vue'),
+  meta: { requiresAuth: true, roles: ['loan-officer'] },
+},
+{
+  path: '/teller/dashboard',
+  component: () => import('@/views/dashboard/tellerDash.vue'),
+  meta: { requiresAuth: true, roles: ['bank-teller'] },
+},
+{
+  path: '/customer/dashboard',
+  component: () => import('@/views/dashboard/customerDash.vue'),
+  meta: { requiresAuth: true, roles: ['customer'] },
+},
+
 
     // ============= CALENDAR =============
     {
