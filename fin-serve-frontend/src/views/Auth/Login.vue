@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import api from '@/services/api';
 import { useRouter } from 'vue-router';
 
@@ -13,6 +13,24 @@ const form = ref({
 const loading = ref(false);
 const error = ref('');
 
+// Check if user is already logged in
+onMounted(() => {
+  const token = localStorage.getItem('token');
+  const user = JSON.parse(localStorage.getItem('user') || 'null');
+
+  if (token && user?.role?.slug) {
+    redirectByRole(user.role.slug);
+  }
+});
+
+// Function to redirect based on role
+const redirectByRole = (role) => {
+  if (role === 'admin') router.push('/admin/dashboard');
+  else if (role === 'manager') router.push('/manager/dashboard');
+  else router.push('/dashboard');
+};
+
+// Login function
 const login = async () => {
   error.value = '';
   loading.value = true;
@@ -23,12 +41,8 @@ const login = async () => {
     localStorage.setItem('token', res.data.token);
     localStorage.setItem('user', JSON.stringify(res.data.user));
 
-    // 🔐 Role-based redirect
     const role = res.data.user.role.slug;
-
-    if (role === 'admin') router.push('/admin/dashboard');
-    else if (role === 'manager') router.push('/manager/dashboard');
-    else router.push('/dashboard');
+    redirectByRole(role);
 
   } catch (err) {
     error.value = err.response?.data?.message || 'Login failed';
