@@ -110,26 +110,6 @@
                           ]"
                         >
                           {{ subItem.name }}
-                          <span class="flex items-center gap-1 ml-auto">
-                            <span
-                              v-if="subItem.new"
-                              :class="[
-                                'menu-dropdown-badge',
-                                { 'menu-dropdown-badge-active': isActive(subItem.path), 'menu-dropdown-badge-inactive': !isActive(subItem.path) },
-                              ]"
-                            >
-                              new
-                            </span>
-                            <span
-                              v-if="subItem.pro"
-                              :class="[
-                                'menu-dropdown-badge',
-                                { 'menu-dropdown-badge-active': isActive(subItem.path), 'menu-dropdown-badge-inactive': !isActive(subItem.path) },
-                              ]"
-                            >
-                              pro
-                            </span>
-                          </span>
                         </router-link>
                       </li>
                     </ul>
@@ -146,14 +126,13 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
 
 import { 
   GridIcon,
   CalenderIcon,
   UserCircleIcon,
-  PieChartIcon,
   ChevronDownIcon,
   HorizontalDots,
   ListIcon,
@@ -166,6 +145,23 @@ import api from "@/services/api";
 const route = useRoute();
 const { isExpanded, isMobileOpen, isHovered, openSubmenu } = useSidebar();
 
+// Reactive variable to store the role after the API call
+const userRole = ref("");
+
+// 1. Fetch user role on mount (Synchronous functions only inside computed!)
+onMounted(async () => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    try {
+      const response = await api.get('/me');
+      userRole.value = response.data.role.slug;
+    } catch (error) {
+      console.error("Error fetching user role:", error);
+      userRole.value = "guest";
+    }
+  }
+});
+
 const menuGroups = [
   {
     title: "Menu",
@@ -174,6 +170,7 @@ const menuGroups = [
         icon: GridIcon,
         name: "Dashboard",
         path: "/finserve-bank",
+        // roles: ["admin", "user"] // Example: Add this if you want to restrict
       },
       {
         icon: CalenderIcon,
@@ -225,32 +222,22 @@ const endTransition = (el) => {
   el.style.height = "";
 };
 
+// 2. Filter menu based on the userRole ref
 const filteredMenuGroups = computed(() => {
-  // Check for the user's role
-  const token = localStorage.getItem('token');
-  const userRole = ref(''); // Default role
-
-  if (token) {
-    api.get('/me').then(response => {
-      userRole.value = response.data.role.slug;
-    }).catch(() => {
-      userRole.value = '';
-    });
-  }
-
-  // Filter menu groups based on user role
   return menuGroups.map(group => {
     const filteredItems = group.items.filter(item => {
-      if (item.roles && item.roles.includes(userRole.value)) {
+      // If no roles are defined, show to everyone
+      if (!item.roles || item.roles.length === 0) {
         return true;
       }
-      return false;
+      // Otherwise, check if user's role matches
+      return item.roles.includes(userRole.value);
     });
     return { ...group, items: filteredItems };
-  });
+  }).filter(group => group.items.length > 0); // Hide group if no items are visible
 });
 </script>
 
 <style scoped>
-/* Add your custom styles here */
+/* Scoped styles are preserved */
 </style>
