@@ -20,7 +20,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import axios from '@/services/axios'
+import axios from '@/services/api'
 
 import AdminLayout from '@/components/layout/AdminLayout.vue'
 import StatCard from '@/components/dashboard/StatCard.vue'

@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Dashboard\AdminDashboardController;
 use App\Http\Controllers\Dashboard\CustomerDashboardController;
 use App\Http\Controllers\Dashboard\ManagerDashboardController;
@@ -18,8 +19,22 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/me', [AuthController::class, 'me']);
-    Route::post('/logout', [AuthController::class, 'logout']);
+// Get the authenticated user info (me)
+    Route::get('/me', [UserController::class, 'me']);
+    // Get all users (admin only or other roles with permission)
+    Route::get('/users', [UserController::class, 'index'])->middleware('can:view-any,user');
+
+    // Get a single user by id
+    Route::get('/users/{id}', [UserController::class, 'show'])->middleware('can:view,user');
+
+    // Create a new user (admin only)
+    Route::post('/users', [UserController::class, 'store'])->middleware('can:create,user');
+
+    // Update an existing user (admin only or self-update)
+    Route::put('/users/{id}', [UserController::class, 'update'])->middleware('can:update,user');
+
+    // Delete a user (admin only)
+    Route::delete('/users/{id}', [UserController::class, 'destroy'])->middleware('can:delete,user');    Route::post('/logout', [AuthController::class, 'logout']);
 
 
 

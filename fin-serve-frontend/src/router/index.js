@@ -1,19 +1,17 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router';
 import api from '@/services/api';
 
 // =======================================================
-// 1. DEFINE AND INITIALIZE ROUTER (Fixes the ReferenceError)
+// 1. DEFINE AND INITIALIZE ROUTER
 // =======================================================
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
 
   scrollBehavior(to, from, savedPosition) {
-    return savedPosition || { left: 0, top: 0 }
+    return savedPosition || { left: 0, top: 0 };
   },
-  
-  routes: [
 
-    // ============= PORTAL (ROOT PAGE) =============
+  routes: [
     {
       path: '/',
       name: 'Home',
@@ -24,7 +22,7 @@ const router = createRouter({
       },
     },
 
-    // ============= AUTH (PUBLIC) =============
+    // ======================= Authentication Routes =======================
     {
       path: '/login',
       name: 'Login',
@@ -44,237 +42,111 @@ const router = createRouter({
       },
     },
 
-    // ============= DASHBOARD =============
+    // ======================= Role-Based Dashboards =======================
+    // This abstract route allows the guard to catch "/dashboard" and redirect
     {
-      path: '/finserve-bank',
-      name: 'FinServeDashboard',
-      component: () => import('../views/Ecommerce.vue'),
-      meta: {
-        title: 'Dashboard',
-      },
+      path: '/dashboard',
+      name: 'DashboardRedirect',
+      meta: { requiresAuth: true },
     },
-
-    // Role-Based Dashboards
     {
       path: '/admin/dashboard',
       component: () => import('@/views/dashboard/AdminDash.vue'),
-      meta: { requiresAuth: true, roles: ['admin'] },
+      meta: { title: 'Admin Dashboard', requiresAuth: true, roles: ['admin'] },
     },
     {
-      path: '/branch-manager/dashboard',
+      path: '/manager/dashboard',
       component: () => import('@/views/dashboard/ManagerDash.vue'),
-      meta: { requiresAuth: true, roles: ['branch-manager'] },
+      meta: { title: 'Manager Dashboard', requiresAuth: true, roles: ['branch-manager'] },
     },
     {
       path: '/loan-officer/dashboard',
       component: () => import('@/views/dashboard/OfficerDash.vue'),
-      meta: { requiresAuth: true, roles: ['loan-officer'] },
+      meta: { title: 'Officer Dashboard', requiresAuth: true, roles: ['loan-officer'] },
     },
     {
       path: '/teller/dashboard',
       component: () => import('@/views/dashboard/TellerDash.vue'),
-      meta: { requiresAuth: true, roles: ['bank-teller'] },
+      meta: { title: 'Teller Dashboard', requiresAuth: true, roles: ['bank-teller'] },
     },
     {
       path: '/customer/dashboard',
       component: () => import('@/views/dashboard/CustomerDash.vue'),
-      meta: { requiresAuth: true, roles: ['customer'] },
+      meta: { title: 'Customer Dashboard', requiresAuth: true, roles: ['customer'] },
     },
 
-
-    // ============= CALENDAR =============
-    {
-      path: '/calendar',
-      name: 'Calendar',
-      component: () => import('../views/Others/Calendar.vue'),
-      meta: {
-        title: 'Calendar',
-      },
-    },
-
-    // ============= PROFILE =============
-    {
-      path: '/profile',
-      name: 'Profile',
-      component: () => import('../views/Others/UserProfile.vue'),
-      meta: {
-        title: 'Profile',
-      },
-    },
-
-    // ============= FORMS =============
-    {
-      path: '/form-elements',
-      name: 'Form Elements',
-      component: () => import('../views/Forms/FormElements.vue'),
-      meta: {
-        title: 'Form Elements',
-      },
-    },
-
-    // ============= TABLES =============
-    {
-      path: '/basic-tables',
-      name: 'Basic Tables',
-      component: () => import('../views/Tables/BasicTables.vue'),
-      meta: {
-        title: 'Basic Tables',
-      },
-    },
-
-    // ============= CHARTS =============
-    {
-      path: '/line-chart',
-      name: 'Line Chart',
-      component: () => import('../views/Chart/LineChart/LineChart.vue'),
-      meta: {
-        title: 'Line Chart',
-      },
-    },
-    {
-      path: '/bar-chart',
-      name: 'Bar Chart',
-      component: () => import('../views/Chart/BarChart/BarChart.vue'),
-      meta: {
-        title: 'Bar Chart',
-      },
-    },
-
-    // ============= UI ELEMENTS =============
-    {
-      path: '/alerts',
-      name: 'Alerts',
-      component: () => import('../views/UiElements/Alerts.vue'),
-      meta: {
-        title: 'Alerts',
-      },
-    },
-    {
-      path: '/avatars',
-      name: 'Avatars',
-      component: () => import('../views/UiElements/Avatars.vue'),
-      meta: {
-        title: 'Avatars',
-      },
-    },
-    {
-      path: '/badge',
-      name: 'Badge',
-      component: () => import('../views/UiElements/Badges.vue'),
-      meta: {
-        title: 'Badge',
-      },
-    },
-    {
-      path: '/buttons',
-      name: 'Buttons',
-      component: () => import('../views/UiElements/Buttons.vue'),
-      meta: {
-        title: 'Buttons',
-      },
-    },
-    {
-      path: '/images',
-      name: 'Images',
-      component: () => import('../views/UiElements/Images.vue'),
-      meta: {
-        title: 'Images',
-      },
-    },
-    {
-      path: '/videos',
-      name: 'Videos',
-      component: () => import('../views/UiElements/Videos.vue'),
-      meta: {
-        title: 'Videos',
-      },
-    },
-
-    // ============= PAGES =============
-    {
-      path: '/blank',
-      name: 'Blank',
-      component: () => import('../views/Pages/BlankPage.vue'),
-      meta: {
-        title: 'Blank Page',
-      },
-    },
-
-    // ============= ERRORS =============
+    // ======================= Error Routes =======================
     {
       path: '/error-404',
       name: '404 Error',
       component: () => import('../views/Errors/FourZeroFour.vue'),
       meta: {
         title: '404 Error',
+        public: true, // Fix: Allows the 404 page to show even if not logged in
       },
     },
 
-    // ============= AUTH =============
+    // ======================= Default Route =======================
     {
-      path: '/signin',
-      name: 'Signin',
-      component: () => import('../views/Auth/Signin.vue'),
-      meta: {
-        title: 'Signin',
-      },
-    },
-    {
-      path: '/signup',
-      name: 'Signup',
-      component: () => import('../views/Auth/Signup.vue'),
-      meta: {
-        title: 'Signup',
-      },
-    },
-  ],
-})
-
-
-// =======================================================
-// 2. AUTHENTICATION AND ROLE CHECK GLOBAL GUARD
-// =======================================================
-router.beforeEach(async (to, from, next) => {
-  const token = localStorage.getItem('token');
-
-  // Check if the route is protected AND the user is not logged in
-  if (!to.meta.public && !token) {
-    return next('/login');
-  }
-
-  // Check for required roles if defined on the route
-  if (to.meta.roles && token) {
-    try {
-      // Fetch user data/role
-      const res = await api.get('/me');
-      const role = res.data.role.slug;
-
-      // Check if the user's role is included in the allowed roles for this route
-      if (!to.meta.roles.includes(role)) {
-        return next('/error-404'); // Forbidden access
-      }
-    } catch (error) {
-      // Handle API errors (e.g., token expired, invalid)
-      console.error('Error fetching user data for role check:', error);
-      localStorage.removeItem('token'); // Clear token if validation failed
-      return next('/login'); // Redirect to login
+      path: '/:catchAll(.*)',
+      redirect: '/error-404',
     }
-  }
-
-  // Continue to the route
-  next();
+  ],
 });
 
 // =======================================================
-// 3. PAGE TITLE HANDLER GLOBAL GUARD
+// 2. COMBINED GLOBAL GUARD (Auth, Roles, and Titles)
 // =======================================================
-router.beforeEach((to, from, next) => {
-  const pageTitle = to.meta.title ?? to.name ?? 'FinServe Bank'
-  document.title = `FinServe Bank — ${pageTitle}`
-  next()
-})
+router.beforeEach(async (to, from, next) => {
+  // A. Set Document Title
+  const pageTitle = to.meta.title ?? to.name ?? 'FinServe Bank';
+  document.title = `FinServe Bank — ${pageTitle}`;
 
-// =======================================================
-// 4. EXPORT ROUTER
-// =======================================================
-export default router
+  const token = localStorage.getItem('token');
+
+  // B. Handle Public Routes
+  if (to.meta.public) {
+    return next();
+  }
+
+  // C. Handle Protected Routes without Token
+  if (!token) {
+    return next('/login');
+  }
+
+  // D. Handle Role-Based Logic and Dashboard Redirection
+  try {
+    // Fetch user data
+    const res = await api.get('/me');
+    const role = res.data.role.slug;
+
+    // Logic for redirecting generic "/dashboard" to role-specific URL
+    if (to.path === '/dashboard') {
+      const dashboardMap = {
+        'admin': '/admin/dashboard',
+        'branch-manager': '/manager/dashboard',
+        'loan-officer': '/loan-officer/dashboard',
+        'bank-teller': '/teller/dashboard',
+        'customer': '/customer/dashboard'
+      };
+      
+      const targetPath = dashboardMap[role];
+      return targetPath ? next(targetPath) : next('/error-404');
+    }
+
+    // Check if the user's role is allowed on the specific route
+    if (to.meta.roles && !to.meta.roles.includes(role)) {
+      console.warn(`User role "${role}" is not authorized for this route.`);
+      return next('/error-404');
+    }
+
+    // If all checks pass
+    next();
+  } catch (error) {
+    console.error('Auth check failed:', error);
+    localStorage.removeItem('token');
+    return next('/login');
+  }
+});
+
+export default router;
