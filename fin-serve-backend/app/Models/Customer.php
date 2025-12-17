@@ -10,7 +10,7 @@ class Customer extends Model
         'user_id','first_name','last_name','dob','phone','email','address','id_number'
     ];
 
-    public function user()
+   public function user()
     {
         return $this->belongsTo(User::class);
     }
@@ -23,5 +23,10 @@ class Customer extends Model
     public function loans()
     {
         return $this->hasMany(Loan::class);
+    }
+
+    public function kyc()
+    {
+        return $this->hasOne(KycForm::class);
     }
 }

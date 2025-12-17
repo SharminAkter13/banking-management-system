@@ -1,25 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import api from '@/services/api';
 
-router.beforeEach(async (to, from, next) => {
-  const token = localStorage.getItem('token');
-
-  if (!to.meta.public && !token) {
-    return next('/login');
-  }
-
-  if (to.meta.roles) {
-    const res = await api.get('/me');
-    const role = res.data.role.slug;
-
-    if (!to.meta.roles.includes(role)) {
-      return next('/error-404');
-    }
-  }
-
-  next();
-});
-
+// =======================================================
+// 1. DEFINE AND INITIALIZE ROUTER (Fixes the ReferenceError)
+// =======================================================
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
 
@@ -27,7 +11,6 @@ const router = createRouter({
     return savedPosition || { left: 0, top: 0 }
   },
   
-
   routes: [
 
     // ============= PORTAL (ROOT PAGE) =============
@@ -41,7 +24,7 @@ const router = createRouter({
       },
     },
 
-     // ============= AUTH (PUBLIC) =============
+    // ============= AUTH (PUBLIC) =============
     {
       path: '/login',
       name: 'Login',
@@ -71,31 +54,32 @@ const router = createRouter({
       },
     },
 
+    // Role-Based Dashboards
     {
-  path: '/admin/dashboard',
-  component: () => import('@/views/dashboard/adminDash.vue'),
-  meta: { requiresAuth: true, roles: ['admin'] },
-},
-{
-  path: '/branch-manager/dashboard',
-  component: () => import('@/views/dashboard/ManagerDash.vue'),
-  meta: { requiresAuth: true, roles: ['branch-manager'] },
-},
-{
-  path: '/loan-officer/dashboard',
-  component: () => import('@/views/dashboard/OfficerDash.vue'),
-  meta: { requiresAuth: true, roles: ['loan-officer'] },
-},
-{
-  path: '/teller/dashboard',
-  component: () => import('@/views/dashboard/tellerDash.vue'),
-  meta: { requiresAuth: true, roles: ['bank-teller'] },
-},
-{
-  path: '/customer/dashboard',
-  component: () => import('@/views/dashboard/customerDash.vue'),
-  meta: { requiresAuth: true, roles: ['customer'] },
-},
+      path: '/admin/dashboard',
+      component: () => import('@/views/dashboard/AdminDash.vue'),
+      meta: { requiresAuth: true, roles: ['admin'] },
+    },
+    {
+      path: '/branch-manager/dashboard',
+      component: () => import('@/views/dashboard/ManagerDash.vue'),
+      meta: { requiresAuth: true, roles: ['branch-manager'] },
+    },
+    {
+      path: '/loan-officer/dashboard',
+      component: () => import('@/views/dashboard/OfficerDash.vue'),
+      meta: { requiresAuth: true, roles: ['loan-officer'] },
+    },
+    {
+      path: '/teller/dashboard',
+      component: () => import('@/views/dashboard/TellerDash.vue'),
+      meta: { requiresAuth: true, roles: ['bank-teller'] },
+    },
+    {
+      path: '/customer/dashboard',
+      component: () => import('@/views/dashboard/CustomerDash.vue'),
+      meta: { requiresAuth: true, roles: ['customer'] },
+    },
 
 
     // ============= CALENDAR =============
@@ -246,11 +230,51 @@ const router = createRouter({
   ],
 })
 
-export default router
 
-// ============= PAGE TITLE HANDLER =============
+// =======================================================
+// 2. AUTHENTICATION AND ROLE CHECK GLOBAL GUARD
+// =======================================================
+router.beforeEach(async (to, from, next) => {
+  const token = localStorage.getItem('token');
+
+  // Check if the route is protected AND the user is not logged in
+  if (!to.meta.public && !token) {
+    return next('/login');
+  }
+
+  // Check for required roles if defined on the route
+  if (to.meta.roles && token) {
+    try {
+      // Fetch user data/role
+      const res = await api.get('/me');
+      const role = res.data.role.slug;
+
+      // Check if the user's role is included in the allowed roles for this route
+      if (!to.meta.roles.includes(role)) {
+        return next('/error-404'); // Forbidden access
+      }
+    } catch (error) {
+      // Handle API errors (e.g., token expired, invalid)
+      console.error('Error fetching user data for role check:', error);
+      localStorage.removeItem('token'); // Clear token if validation failed
+      return next('/login'); // Redirect to login
+    }
+  }
+
+  // Continue to the route
+  next();
+});
+
+// =======================================================
+// 3. PAGE TITLE HANDLER GLOBAL GUARD
+// =======================================================
 router.beforeEach((to, from, next) => {
   const pageTitle = to.meta.title ?? to.name ?? 'FinServe Bank'
   document.title = `FinServe Bank — ${pageTitle}`
   next()
 })
+
+// =======================================================
+// 4. EXPORT ROUTER
+// =======================================================
+export default router

@@ -12,7 +12,6 @@ use App\Http\Controllers\Dashboard\TellerDashboardController;
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
-Route::get('/roles', [RoleController::class, 'index']);
 
 
 Route::post('/login', [AuthController::class, 'login']);

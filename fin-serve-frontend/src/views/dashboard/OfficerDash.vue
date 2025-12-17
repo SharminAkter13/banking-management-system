@@ -1,47 +1,25 @@
 <template>
   <admin-layout>
-    <div class="grid grid-cols-12 gap-4 md:gap-6">
-      <div class="col-span-12 space-y-6 xl:col-span-7">
-        <ecommerce-metrics />
-        <monthly-target />
-      </div>
-      <div class="col-span-12 xl:col-span-5">
-        <monthly-sale />
-      </div>
+    <h1 class="mb-6 text-2xl font-bold">Loan Officer Dashboard</h1>
 
-      <div class="col-span-12">
-        <statistics-chart />
-      </div>
-
-      <div class="col-span-12 xl:col-span-5">
-        <customer-demographic />
-      </div>
-
-      <div class="col-span-12 xl:col-span-7">
-        <recent-orders />
-      </div>
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+      <StatCard label="Assigned Loans" :value="data.assigned_loans" />
+      <StatCard label="Pending Loans" :value="data.pending_loans" />
+      <StatCard label="Approved Today" :value="data.approved_today" />
     </div>
   </admin-layout>
 </template>
 
-<script>
-import AdminLayout from '../components/layout/AdminLayout.vue'
-import EcommerceMetrics from '../components/ecommerce/EcommerceMetrics.vue'
-import MonthlyTarget from '../components/ecommerce/MonthlySale.vue'
-import MonthlySale from '../components/ecommerce/MonthlyTarget.vue'
-import CustomerDemographic from '../components/ecommerce/CustomerDemographic.vue'
-import StatisticsChart from '../components/ecommerce/StatisticsChart.vue'
-import RecentOrders from '../components/ecommerce/RecentOrders.vue'
-export default {
-  components: {
-    AdminLayout,
-    EcommerceMetrics,
-    MonthlyTarget,
-    MonthlySale,
-    CustomerDemographic,
-    StatisticsChart,
-    RecentOrders,
-  },
-  name: 'Ecommerce',
-}
+<script setup>
+import { ref, onMounted } from 'vue'
+import axios from '@/services/axios'
+import AdminLayout from '@/components/layout/AdminLayout.vue'
+import StatCard from '@/components/dashboard/StatCard.vue'
+
+const data = ref({})
+
+onMounted(async () => {
+  const res = await axios.get('/officer/dashboard')
+  data.value = res.data
+})
 </script>
