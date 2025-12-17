@@ -1,152 +1,154 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import api from '@/services/api';
+import { createRouter, createWebHistory } from 'vue-router'
+import api from '@/services/api'
 
-// =======================================================
-// 1. DEFINE AND INITIALIZE ROUTER
-// =======================================================
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
 
-  scrollBehavior(to, from, savedPosition) {
-    return savedPosition || { left: 0, top: 0 };
+  scrollBehavior() {
+    return { top: 0 }
   },
 
   routes: [
+    // ================= Public =================
     {
       path: '/',
       name: 'Home',
-      component: () => import('../views/portal_page/Home.vue'),
-      meta: {
-        title: 'Home',
-        public: true,
-      },
+      component: () => import('@/views/portal_page/Home.vue'),
+      meta: { title: 'Home', public: true }
     },
-
-    // ======================= Authentication Routes =======================
     {
       path: '/login',
       name: 'Login',
-      component: () => import('../views/Auth/Login.vue'),
-      meta: {
-        title: 'Login',
-        public: true,
-      },
+      component: () => import('@/views/Auth/Login.vue'),
+      meta: { title: 'Login', public: true }
     },
     {
       path: '/register',
       name: 'Register',
-      component: () => import('../views/Auth/Register.vue'),
-      meta: {
-        title: 'Register',
-        public: true,
-      },
+      component: () => import('@/views/Auth/Register.vue'),
+      meta: { title: 'Register', public: true }
     },
 
-    // ======================= Role-Based Dashboards =======================
-    // This abstract route allows the guard to catch "/dashboard" and redirect
+    // ================= Dashboard Redirect =================
     {
       path: '/dashboard',
       name: 'DashboardRedirect',
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true }
     },
+
+    // ================= Role Dashboards =================
     {
       path: '/admin/dashboard',
       component: () => import('@/views/dashboard/AdminDash.vue'),
-      meta: { title: 'Admin Dashboard', requiresAuth: true, roles: ['admin'] },
+      meta: { title: 'Admin Dashboard', requiresAuth: true, roles: ['admin'] }
     },
     {
       path: '/manager/dashboard',
       component: () => import('@/views/dashboard/ManagerDash.vue'),
-      meta: { title: 'Manager Dashboard', requiresAuth: true, roles: ['branch-manager'] },
+      meta: { title: 'Manager Dashboard', requiresAuth: true, roles: ['branch-manager'] }
     },
     {
-      path: '/loan-officer/dashboard',
+      path: '/officer/dashboard',
       component: () => import('@/views/dashboard/OfficerDash.vue'),
-      meta: { title: 'Officer Dashboard', requiresAuth: true, roles: ['loan-officer'] },
+      meta: { title: 'Officer Dashboard', requiresAuth: true, roles: ['loan-officer'] }
     },
     {
       path: '/teller/dashboard',
       component: () => import('@/views/dashboard/TellerDash.vue'),
-      meta: { title: 'Teller Dashboard', requiresAuth: true, roles: ['bank-teller'] },
+      meta: { title: 'Teller Dashboard', requiresAuth: true, roles: ['bank-teller'] }
     },
     {
       path: '/customer/dashboard',
       component: () => import('@/views/dashboard/CustomerDash.vue'),
-      meta: { title: 'Customer Dashboard', requiresAuth: true, roles: ['customer'] },
+      meta: { title: 'Customer Dashboard', requiresAuth: true, roles: ['customer'] }
     },
 
-    // ======================= Error Routes =======================
+    // ======================= User Management =======================
+{
+  path: '/admin/users',
+  name: 'UserList',
+  component: () => import('@/views/users/UsersList.vue'),
+  meta: {
+    title: 'Users',
+    requiresAuth: true,
+    roles: ['admin']
+  }
+},
+{
+  path: '/admin/users/create',
+  name: 'UserCreate',
+  component: () => import('@/views/users/UserForm.vue'),
+  meta: {
+    title: 'Create User',
+    requiresAuth: true,
+    roles: ['admin']
+  }
+},
+{
+  path: '/admin/users/:id/edit',
+  name: 'UserEdit',
+  component: () => import('@/views/users/UserForm.vue'),
+  meta: {
+    title: 'Edit User',
+    requiresAuth: true,
+    roles: ['admin']
+  }
+},
+
+
+    // ================= Errors =================
     {
       path: '/error-404',
-      name: '404 Error',
-      component: () => import('../views/Errors/FourZeroFour.vue'),
-      meta: {
-        title: '404 Error',
-        public: true, // Fix: Allows the 404 page to show even if not logged in
-      },
+      component: () => import('@/views/Errors/FourZeroFour.vue'),
+      meta: { title: '404', public: true }
     },
-
-    // ======================= Default Route =======================
     {
       path: '/:catchAll(.*)',
-      redirect: '/error-404',
+      redirect: '/error-404'
     }
-  ],
-});
+  ]
+})
 
-// =======================================================
-// 2. COMBINED GLOBAL GUARD (Auth, Roles, and Titles)
-// =======================================================
+/* ======================================================
+   GLOBAL GUARD
+====================================================== */
 router.beforeEach(async (to, from, next) => {
-  // A. Set Document Title
-  const pageTitle = to.meta.title ?? to.name ?? 'FinServe Bank';
-  document.title = `FinServe Bank — ${pageTitle}`;
+  document.title = `FinServe Bank — ${to.meta.title || 'App'}`
 
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('token')
 
-  // B. Handle Public Routes
-  if (to.meta.public) {
-    return next();
-  }
+  // Public routes
+  if (to.meta.public) return next()
 
-  // C. Handle Protected Routes without Token
-  if (!token) {
-    return next('/login');
-  }
+  // Auth required
+  if (!token) return next('/login')
 
-  // D. Handle Role-Based Logic and Dashboard Redirection
   try {
-    // Fetch user data
-    const res = await api.get('/me');
-    const role = res.data.role.slug;
+    const { data } = await api.get('/me')
+    const role = data.role.slug
 
-    // Logic for redirecting generic "/dashboard" to role-specific URL
+    // Redirect /dashboard → role dashboard
     if (to.path === '/dashboard') {
-      const dashboardMap = {
-        'admin': '/admin/dashboard',
+      const map = {
+        admin: '/admin/dashboard',
         'branch-manager': '/manager/dashboard',
-        'loan-officer': '/loan-officer/dashboard',
+        'loan-officer': '/officer/dashboard',
         'bank-teller': '/teller/dashboard',
-        'customer': '/customer/dashboard'
-      };
-      
-      const targetPath = dashboardMap[role];
-      return targetPath ? next(targetPath) : next('/error-404');
+        customer: '/customer/dashboard'
+      }
+      return next(map[role] || '/error-404')
     }
 
-    // Check if the user's role is allowed on the specific route
+    // Role protection
     if (to.meta.roles && !to.meta.roles.includes(role)) {
-      console.warn(`User role "${role}" is not authorized for this route.`);
-      return next('/error-404');
+      return next('/error-404')
     }
 
-    // If all checks pass
-    next();
-  } catch (error) {
-    console.error('Auth check failed:', error);
-    localStorage.removeItem('token');
-    return next('/login');
+    next()
+  } catch (e) {
+    localStorage.removeItem('token')
+    next('/login')
   }
-});
+})
 
-export default router;
+export default router

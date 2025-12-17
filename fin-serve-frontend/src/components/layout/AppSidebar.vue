@@ -58,6 +58,7 @@
             </h2>
             <ul class="flex flex-col gap-4">
               <li v-for="(item, index) in menuGroup.items" :key="item.name">
+                
                 <button
                   v-if="item.subItems"
                   @click="toggleSubmenu(groupIndex, index)"
@@ -67,9 +68,7 @@
                     !isExpanded && !isHovered ? 'lg:justify-center' : 'lg:justify-start',
                   ]"
                 >
-                  <span
-                    :class="[isSubmenuOpen(groupIndex, index) ? 'menu-item-icon-active' : 'menu-item-icon-inactive']"
-                  >
+                  <span :class="[isSubmenuOpen(groupIndex, index) ? 'menu-item-icon-active' : 'menu-item-icon-inactive']">
                     <component :is="item.icon" />
                   </span>
                   <span v-if="isExpanded || isHovered || isMobileOpen" class="menu-item-text">{{ item.name }}</span>
@@ -90,15 +89,18 @@
                     { 'menu-item-active': isActive(item.path), 'menu-item-inactive': !isActive(item.path) },
                   ]"
                 >
-                  <span
-                    :class="[isActive(item.path) ? 'menu-item-icon-active' : 'menu-item-icon-inactive']"
-                  >
+                  <span :class="[isActive(item.path) ? 'menu-item-icon-active' : 'menu-item-icon-inactive']">
                     <component :is="item.icon" />
                   </span>
                   <span v-if="isExpanded || isHovered || isMobileOpen" class="menu-item-text">{{ item.name }}</span>
                 </router-link>
 
-                <transition @enter="startTransition" @after-enter="endTransition" @before-leave="startTransition" @after-leave="endTransition">
+                <transition 
+                  @enter="startTransition" 
+                  @after-enter="endTransition" 
+                  @before-leave="startTransition" 
+                  @after-leave="endTransition"
+                >
                   <div v-show="isSubmenuOpen(groupIndex, index) && (isExpanded || isHovered || isMobileOpen)">
                     <ul class="mt-2 space-y-1 ml-9">
                       <li v-for="subItem in item.subItems" :key="subItem.name">
@@ -120,8 +122,7 @@
           </div>
         </div>
       </nav>
-      <SidebarWidget v-if="isExpanded || isHovered || isMobileOpen" />
-    </div>
+      </div>
   </aside>
 </template>
 
@@ -138,17 +139,14 @@ import {
   ListIcon,
   BoxCubeIcon
 } from "../../icons";
-import SidebarWidget from "./SidebarWidget.vue";
 import { useSidebar } from "@/composables/useSidebar";
 import api from "@/services/api";
 
 const route = useRoute();
 const { isExpanded, isMobileOpen, isHovered, openSubmenu } = useSidebar();
-
-// Reactive variable to store the role after the API call
 const userRole = ref("");
 
-// 1. Fetch user role on mount (Synchronous functions only inside computed!)
+// Fetch role once on mount to ensure menu items filter correctly
 onMounted(async () => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -156,8 +154,7 @@ onMounted(async () => {
       const response = await api.get('/me');
       userRole.value = response.data.role.slug;
     } catch (error) {
-      console.error("Error fetching user role:", error);
-      userRole.value = "guest";
+      userRole.value = "";
     }
   }
 });
@@ -169,30 +166,13 @@ const menuGroups = [
       {
         icon: GridIcon,
         name: "Dashboard",
-        path: "/finserve-bank",
-        // roles: ["admin", "user"] // Example: Add this if you want to restrict
-      },
-      {
-        icon: CalenderIcon,
-        name: "Calendar",
-        path: "/calendar",
+        path: "/dashboard", // Point to the redirect path in your router
       },
       {
         icon: UserCircleIcon,
-        name: "User Profile",
-        path: "/profile",
-      },
-      {
-        name: "Forms",
-        icon: ListIcon,
-        subItems: [
-          { name: "Form Elements", path: "/form-elements" },
-        ],
-      },
-      {
-        name: "Tables",
-        icon: BoxCubeIcon,
-        subItems: [{ name: "Basic Tables", path: "/basic-tables" }],
+        name: "Users",
+        path: "/admin/users",
+        roles: ['admin'] // Only admin sees this
       },
     ],
   },
@@ -210,11 +190,12 @@ const isSubmenuOpen = (groupIndex, itemIndex) => {
   return openSubmenu.value === key;
 };
 
+// Smooth height transitions
 const startTransition = (el) => {
   el.style.height = "auto";
   const height = el.scrollHeight;
   el.style.height = "0px";
-  el.offsetHeight; // force reflow
+  el.offsetHeight; 
   el.style.height = height + "px";
 };
 
@@ -222,22 +203,16 @@ const endTransition = (el) => {
   el.style.height = "";
 };
 
-// 2. Filter menu based on the userRole ref
+// Filtered Menu Logic
 const filteredMenuGroups = computed(() => {
   return menuGroups.map(group => {
     const filteredItems = group.items.filter(item => {
-      // If no roles are defined, show to everyone
-      if (!item.roles || item.roles.length === 0) {
-        return true;
-      }
-      // Otherwise, check if user's role matches
+      // If no roles restricted, show to all authenticated users
+      if (!item.roles) return true;
+      // Otherwise check if current role matches restricted list
       return item.roles.includes(userRole.value);
     });
     return { ...group, items: filteredItems };
-  }).filter(group => group.items.length > 0); // Hide group if no items are visible
+  }).filter(group => group.items.length > 0);
 });
 </script>
-
-<style scoped>
-/* Scoped styles are preserved */
-</style>

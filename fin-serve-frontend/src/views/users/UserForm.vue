@@ -1,25 +1,50 @@
 <template>
-  <div class="p-4">
-    <h2 class="text-xl font-semibold mb-4">{{ isEdit ? 'Edit User' : 'Create User' }}</h2>
+  <AdminLayout>
+    <div class="flex items-center justify-between mb-7">
+      <div>
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white/90">
+          {{ isEdit ? 'Edit User' : 'Create User' }}
+        </h2>
+      </div>
+      <router-link to="/admin/users" class="px-4 py-2 text-sm border rounded-lg hover:bg-gray-50 dark:border-gray-800">
+        Back to List
+      </router-link>
+    </div>
 
-    <form @submit.prevent="submitForm" class="flex flex-col gap-4 max-w-md">
-      <input v-model="form.name" type="text" placeholder="Name" class="p-2 border rounded" required />
-      <input v-model="form.email" type="email" placeholder="Email" class="p-2 border rounded" required />
-      <input v-model="form.password" type="password" placeholder="Password" class="p-2 border rounded" :required="!isEdit" />
-
-      <select v-model="form.role_id" class="p-2 border rounded" required>
-        <option value="">Select Role</option>
-        <option v-for="role in roles" :key="role.id" :value="role.id">{{ role.name }}</option>
-      </select>
-
-      <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">
-        {{ isEdit ? 'Update' : 'Create' }}
-      </button>
-    </form>
-  </div>
+    <div class="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03] max-w-2xl">
+      <form @submit.prevent="submitForm" class="space-y-5">
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-medium">Full Name</label>
+            <input v-model="form.name" type="text" class="p-2.5 border rounded-lg dark:bg-gray-900 dark:border-gray-800" required />
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-medium">Email Address</label>
+            <input v-model="form.email" type="email" class="p-2.5 border rounded-lg dark:bg-gray-900 dark:border-gray-800" required />
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-medium">Password {{ isEdit ? '(Optional)' : '' }}</label>
+            <input v-model="form.password" type="password" class="p-2.5 border rounded-lg dark:bg-gray-900 dark:border-gray-800" :required="!isEdit" />
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-medium">Role</label>
+            <select v-model="form.role_id" class="p-2.5 border rounded-lg dark:bg-gray-900 dark:border-gray-800" required>
+              <option v-for="role in roles" :key="role.id" :value="role.id">{{ role.name }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex justify-end pt-4">
+          <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+            {{ isEdit ? 'Update User' : 'Save User' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </AdminLayout>
 </template>
 
 <script setup>
+import AdminLayout from '@/components/layout/AdminLayout.vue'
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getUser, createUser, updateUser, getRoles } from './UserService'
@@ -27,54 +52,25 @@ import { getUser, createUser, updateUser, getRoles } from './UserService'
 const route = useRoute()
 const router = useRouter()
 const isEdit = ref(!!route.params.id)
-
-const form = ref({
-  name: '',
-  email: '',
-  password: '',
-  role_id: ''
-})
-
 const roles = ref([])
+const form = ref({ name: '', email: '', password: '', role_id: '', status: 'active' })
 
 const fetchRoles = async () => {
-  try {
-    const res = await getRoles()
-    roles.value = res.data
-  } catch (err) {
-    console.error(err)
-  }
+  const res = await getRoles(); roles.value = res.data;
 }
 
 const fetchUserData = async (id) => {
-  try {
-    const res = await getUser(id)
-    form.value = {
-      name: res.data.name,
-      email: res.data.email,
-      password: '',
-      role_id: res.data.role.id
-    }
-  } catch (err) {
-    console.error(err)
-  }
+  const res = await getUser(id);
+  form.value = { name: res.data.name, email: res.data.email, role_id: res.data.role_id, status: res.data.status };
 }
 
 const submitForm = async () => {
   try {
-    if (isEdit.value) {
-      await updateUser(route.params.id, form.value)
-    } else {
-      await createUser(form.value)
-    }
-    router.push('/users')
-  } catch (err) {
-    console.error(err)
-  }
+    if (isEdit.value) { await updateUser(route.params.id, form.value); }
+    else { await createUser(form.value); }
+    router.push('/admin/users');
+  } catch (err) { console.error(err); }
 }
 
-onMounted(() => {
-  fetchRoles()
-  if (isEdit.value) fetchUserData(route.params.id)
-})
+onMounted(() => { fetchRoles(); if (isEdit.value) fetchUserData(route.params.id); })
 </script>
