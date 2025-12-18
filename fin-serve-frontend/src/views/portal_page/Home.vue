@@ -31,6 +31,7 @@ import PortalLayout from "../../layouts/PortalLayout.vue";
     </div>
 
     <div class="relative -mt-12 lg:-mt-24">
+      
       <svg viewBox="0 0 1428 174" xmlns="http://www.w3.org/2000/svg">
         <g fill="none" fill-rule="evenodd">
           <g transform="translate(-2 44)" fill="#FFFFFF" fill-rule="nonzero">
@@ -66,7 +67,9 @@ import PortalLayout from "../../layouts/PortalLayout.vue";
           </div>
 
           <div class="w-full sm:w-1/2 p-6">
+            
             <svg class="w-full sm:h-64 mx-auto" viewBox="0 0 1177 598.5">
+              
               <ellipse cx="588.5" cy="577.5" rx="588.5" ry="21" fill="#3f3d56" />
             </svg>
           </div>

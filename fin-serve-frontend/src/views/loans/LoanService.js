@@ -1,0 +1,16 @@
+import api from '@/services/api'
+
+// Fetch all loans
+export const getLoans = () => api.get('/loans');
+
+// Fetch a single loan by ID
+export const getLoan = (id) => api.get(`/loans/${id}`);
+
+// Create a new loan
+export const createLoan = (data) => api.post('/loans', data);
+
+// Update an existing loan
+export const updateLoan = (id, data) => api.put(`/loans/${id}`, data);
+
+// Delete a loan
+export const deleteLoan = (id) => api.delete(`/loans/${id}`);

@@ -12,33 +12,35 @@
     <div class="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03] max-w-2xl">
       <form @submit.prevent="submitForm" class="space-y-5">
         <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
-          <!-- Name -->
           <div class="flex flex-col gap-2">
             <label class="text-sm font-medium">Full Name</label>
             <input v-model="form.name" type="text" class="p-2.5 border rounded-lg dark:bg-gray-900 dark:border-gray-800" required />
           </div>
 
-          <!-- Email -->
           <div class="flex flex-col gap-2">
             <label class="text-sm font-medium">Email Address</label>
             <input v-model="form.email" type="email" class="p-2.5 border rounded-lg dark:bg-gray-900 dark:border-gray-800" required />
           </div>
 
-          <!-- Password -->
           <div class="flex flex-col gap-2">
             <label class="text-sm font-medium">Password {{ isEdit ? '(Optional)' : '' }}</label>
             <input v-model="form.password" type="password" class="p-2.5 border rounded-lg dark:bg-gray-900 dark:border-gray-800" :required="!isEdit" />
           </div>
 
-          <!-- Role -->
           <div class="flex flex-col gap-2">
             <label class="text-sm font-medium">Role</label>
-            <select v-model="form.role_id" class="p-2.5 border rounded-lg dark:bg-gray-900 dark:border-gray-800" required>
-              <option v-for="role in roles" :key="role.id" :value="role.id">{{ role.name }}</option>
+            <select 
+              v-model="form.role_id" 
+              class="p-2.5 border rounded-lg bg-white dark:bg-gray-900 dark:border-gray-800" 
+              required
+            >
+              <option value="" disabled>Select a role</option>
+              <option v-for="role in roles" :key="role.id" :value="role.id">
+                {{ role.name }}
+              </option>
             </select>
           </div>
 
-          <!-- Status -->
           <div class="flex flex-col gap-2">
             <label class="text-sm font-medium">Status</label>
             <select v-model="form.status" class="p-2.5 border rounded-lg dark:bg-gray-900 dark:border-gray-800" required>
@@ -48,9 +50,8 @@
           </div>
         </div>
 
-        <!-- Submit button -->
         <div class="flex justify-end pt-4">
-          <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+          <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
             {{ isEdit ? 'Update User' : 'Save User' }}
           </button>
         </div>
@@ -78,17 +79,20 @@ const form = ref({
   status: 'active'
 })
 
-// Fetch all roles
+// Fetch all roles with data validation
 const fetchRoles = async () => {
   try {
     const res = await getRoles()
-    roles.value = res.data.data || res.data
+    // Your UserController.php wraps results in 'data'
+    // Axios also wraps the response body in 'data'. 
+    // We check both res.data.data and res.data
+    roles.value = res.data.data || res.data || []
+    console.log("Roles loaded:", roles.value)
   } catch (err) {
     console.error("Fetch Roles Error:", err)
   }
 }
 
-// Fetch user data if editing
 const fetchUserData = async (id) => {
   try {
     const res = await getUser(id)
@@ -98,14 +102,13 @@ const fetchUserData = async (id) => {
       email: user.email,
       role_id: user.role_id,
       status: user.status || 'active',
-      password: '' // leave blank for editing
+      password: '' 
     }
   } catch (err) {
     console.error("Fetch User Error:", err)
   }
 }
 
-// Submit form (create or update)
 const submitForm = async () => {
   try {
     if (isEdit.value) {
