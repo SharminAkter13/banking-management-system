@@ -2,40 +2,35 @@
 
 namespace App\Policies;
 
-namespace App\Policies;
-
 use App\Models\User;
-use App\Models\Role;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class UserPolicy
 {
-    // Check if a user can view any user (Admin role)
-    public function viewAny(User $user)
+    use HandlesAuthorization;
+
+    public function viewAny(User $authUser)
     {
-        return $user->role->slug === 'admin'; // or any other condition based on roles
+        return $authUser->role->slug === 'admin';
     }
 
-    // Check if a user can view a single user (Admin or the user themselves)
-    public function view(User $user, User $model)
+    public function view(User $authUser, User $user)
     {
-        return $user->role->slug === 'admin' || $user->id === $model->id;
+        return $authUser->role->slug === 'admin' || $authUser->id === $user->id;
     }
 
-    // Check if a user can create a new user (Admin role)
-    public function create(User $user)
+    public function create(User $authUser)
     {
-        return $user->role->slug === 'admin';
+        return $authUser->role->slug === 'admin';
     }
 
-    // Check if a user can update another user (Admin or the user themselves)
-    public function update(User $user, User $model)
+    public function update(User $authUser, User $user)
     {
-        return $user->role->slug === 'admin' || $user->id === $model->id;
+        return $authUser->role->slug === 'admin' || $authUser->id === $user->id;
     }
 
-    // Check if a user can delete a user (Admin role)
-    public function delete(User $user, User $model)
+    public function delete(User $authUser, User $user)
     {
-        return $user->role->slug === 'admin';
+        return $authUser->role->slug === 'admin';
     }
 }

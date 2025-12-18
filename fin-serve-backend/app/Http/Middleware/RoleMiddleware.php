@@ -4,33 +4,14 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
-
-
-// class RoleMiddleware
-// {
-//     public function handle($request, Closure $next, ...$roles)
-//     {
-//         if (!in_array($request->user()->role_id, $roles)) {
-//             return response()->json(['message' => 'Forbidden'], 403);
-//         }
-//         return $next($request);
-//     }
-// }
-
-
 
 class RoleMiddleware
 {
-    public function handle(Request $request, Closure $next, ...$roles)
+    public function handle(Request $request, Closure $next, $role)
     {
-        $user = $request->user();
-
-        if (!$user || !in_array($user->role->slug, $roles)) {
-            return response()->json(['message' => 'Forbidden'], 403);
+        if (!$request->user() || $request->user()->role->slug !== $role) {
+            return response()->json(['message' => 'Unauthorized'], 403);
         }
-
         return $next($request);
     }
 }
-

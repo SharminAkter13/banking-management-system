@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
@@ -16,17 +15,17 @@ class UserController extends Controller
     // ===============================
     public function index()
     {
-        $users = User::with('role')->get(); // eager load role
-        return response()->json($users);
+        $users = User::with('role')->get();
+        return response()->json(['data' => $users]);
     }
 
     // ===============================
     // Get single user by id
     // ===============================
-    public function show($id)
+    public function show(User $user)
     {
-        $user = User::with('role')->findOrFail($id);
-        return response()->json($user);
+        $user->load('role');
+        return response()->json(['data' => $user]);
     }
 
     // ===============================
@@ -39,6 +38,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8',
             'role_id' => ['required', Rule::exists('roles', 'id')],
+            'status' => 'sometimes|in:active,inactive'
         ]);
 
         $user = User::create([
@@ -46,47 +46,54 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role_id' => $request->role_id,
+            'status' => $request->status ?? 'active',
         ]);
 
-        return response()->json($user, 201);
+        $user->load('role');
+
+        return response()->json(['data' => $user], 201);
     }
 
     // ===============================
     // Update user
     // ===============================
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        $user = User::findOrFail($id);
-
         $request->validate([
             'name' => 'sometimes|required|string|max:255',
             'email' => ['sometimes','required','email', Rule::unique('users')->ignore($user->id)],
             'password' => 'nullable|string|min:8',
             'role_id' => ['sometimes','required', Rule::exists('roles', 'id')],
+            'status' => 'sometimes|in:active,inactive'
         ]);
 
         $user->name = $request->name ?? $user->name;
         $user->email = $request->email ?? $user->email;
+
         if ($request->password) {
             $user->password = Hash::make($request->password);
         }
+
         if ($request->role_id) {
             $user->role_id = $request->role_id;
         }
 
-        $user->save();
+        if ($request->status) {
+            $user->status = $request->status;
+        }
 
-        return response()->json($user);
+        $user->save();
+        $user->load('role');
+
+        return response()->json(['data' => $user]);
     }
 
     // ===============================
     // Delete user
     // ===============================
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        $user = User::findOrFail($id);
         $user->delete();
-
         return response()->json(['message' => 'User deleted successfully.']);
     }
 
@@ -106,6 +113,7 @@ class UserController extends Controller
                 'slug' => $user->role->slug,
                 'name' => $user->role->name,
             ],
+            'status' => $user->status,
         ]);
     }
 }
