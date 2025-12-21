@@ -122,7 +122,7 @@ const menuGroups = computed(() => [
         icon: UserCircleIcon,
         name: "Loans",
         path: "/admin/loans",
-        roles: ['admin', 'branch-manager'] // Adding loan management to the sidebar
+        roles: ['admin', 'branch-manager','loan-officer'] // Adding loan management to the sidebar
       },
     ],
   },

@@ -146,19 +146,19 @@ const router = createRouter({
       path: '/admin/loans',
       name: 'LoanList',
       component: () => import('@/views/loans/LoanList.vue'),
-      meta: { title: 'Loans', requiresAuth: true, roles: ['admin', 'branch-manager'] }
+      meta: { title: 'Loans', requiresAuth: true, roles: ['admin', 'branch-manager','loan-officer'] }
     },
     {
       path: '/admin/loans/create',
       name: 'LoanCreate',
       component: () => import('@/views/loans/LoanForm.vue'),
-      meta: { title: 'Create Loan', requiresAuth: true, roles: ['admin', 'branch-manager'] }
+      meta: { title: 'Create Loan', requiresAuth: true, roles: ['admin', 'branch-manager','loan-officer'] }
     },
     {
       path: '/admin/loans/:id/edit',
       name: 'LoanEdit',
       component: () => import('@/views/loans/LoanForm.vue'),
-      meta: { title: 'Edit Loan', requiresAuth: true, roles: ['admin', 'branch-manager'] }
+      meta: { title: 'Edit Loan', requiresAuth: true, roles: ['admin', 'branch-manager','loan-officer'] }
     },
 
     // ================= Errors =================
