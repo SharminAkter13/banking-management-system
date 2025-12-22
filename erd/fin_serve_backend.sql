@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 18, 2025 at 06:27 AM
+-- Generation Time: Dec 22, 2025 at 08:50 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -443,19 +443,7 @@ CREATE TABLE `personal_access_tokens` (
 --
 
 INSERT INTO `personal_access_tokens` (`id`, `tokenable_type`, `tokenable_id`, `name`, `token`, `abilities`, `last_used_at`, `expires_at`, `created_at`, `updated_at`) VALUES
-(1, 'App\\Models\\User', 1, 'banking-dashboard', '5402d0176f54a22cd0421ca24a7a8ee8cf5134e25b9d41d78a77c9f8b41027e8', '[\"*\"]', '2025-12-16 22:22:20', NULL, '2025-12-16 22:03:57', '2025-12-16 22:22:20'),
-(2, 'App\\Models\\User', 2, 'banking-dashboard', '1032c9232f6ba0ad98e03fb12feb8e2f586c93a40bb0f920e312004baddb892e', '[\"*\"]', '2025-12-16 23:43:21', NULL, '2025-12-16 22:23:08', '2025-12-16 23:43:21'),
-(3, 'App\\Models\\User', 2, 'banking-dashboard', 'eee55fc99c3210cfd082a8ff827bc281ae7c21a1f85a7ed2175b76a0686e49cc', '[\"*\"]', NULL, NULL, '2025-12-16 23:43:48', '2025-12-16 23:43:48'),
-(4, 'App\\Models\\User', 2, 'banking-dashboard', '1d693378231370df2be0c99d7cdab79a58f0203956ad9a668ce26fa56199de2d', '[\"*\"]', NULL, NULL, '2025-12-16 23:50:19', '2025-12-16 23:50:19'),
-(5, 'App\\Models\\User', 2, 'banking-dashboard', 'aec94197079e741df26f11d0b475a2ac1d2874d59365e0fedbf792570802c5e8', '[\"*\"]', NULL, NULL, '2025-12-17 00:34:34', '2025-12-17 00:34:34'),
-(6, 'App\\Models\\User', 2, 'banking-dashboard', '139cb493d6ba2c3afbf4a64992c3b446888a34d701f639d17857ef4a68e53767', '[\"*\"]', NULL, NULL, '2025-12-17 00:34:47', '2025-12-17 00:34:47'),
-(7, 'App\\Models\\User', 2, 'banking-dashboard', 'edff9ee7c98e8923791a335a608bd2e1536d838439d4c00dd445dc0ce083b72a', '[\"*\"]', '2025-12-17 20:46:49', NULL, '2025-12-17 00:43:05', '2025-12-17 20:46:49'),
-(8, 'App\\Models\\User', 1, 'banking-dashboard', '2bfd358b8a00f00832ee2b81942b708bc004ee1f42a1060b7af0c4a954330f1f', '[\"*\"]', '2025-12-17 23:23:59', NULL, '2025-12-17 20:48:40', '2025-12-17 23:23:59'),
-(9, 'App\\Models\\User', 1, 'banking-dashboard', '58fe6269a586481d9a796ad96bd8ae2efd7810b36bc6a56c87e0df8478c9f479', '[\"*\"]', NULL, NULL, '2025-12-17 21:14:10', '2025-12-17 21:14:10'),
-(10, 'App\\Models\\User', 2, 'banking-dashboard', '8ac72c64891b4a4b1bcca0ea79ee23df9132429b8992c8820fe28c1eabc95faf', '[\"*\"]', NULL, NULL, '2025-12-17 21:14:39', '2025-12-17 21:14:39'),
-(11, 'App\\Models\\User', 3, 'banking-dashboard', '515a073e59ecd1b227fd5655217d611b547816aa7a94c140b90300171e0de489', '[\"*\"]', NULL, NULL, '2025-12-17 21:15:00', '2025-12-17 21:15:00'),
-(12, 'App\\Models\\User', 4, 'banking-dashboard', '63f28e1d09609175d631e1e67c3325b2fcd6e806d840ccd0494d63f07972b64b', '[\"*\"]', NULL, NULL, '2025-12-17 21:15:18', '2025-12-17 21:15:18'),
-(13, 'App\\Models\\User', 5, 'banking-dashboard', '3905828d4c36d145e9293b29dd692b49c820192bf9ac9e7fd860ee0034d5302e', '[\"*\"]', NULL, NULL, '2025-12-17 21:15:46', '2025-12-17 21:15:46');
+(1, 'App\\Models\\User', 1, 'banking-dashboard', '965d7b195159c48283f4733be512b61c35016c418d1a21df802d55956ca3e3f9', '[\"*\"]', '2025-12-17 14:54:30', NULL, '2025-12-17 14:14:30', '2025-12-17 14:54:30');
 
 -- --------------------------------------------------------
 
@@ -476,11 +464,11 @@ CREATE TABLE `roles` (
 --
 
 INSERT INTO `roles` (`id`, `name`, `slug`, `created_at`, `updated_at`) VALUES
-(1, 'Admin', 'admin', '2025-12-14 21:24:28', '2025-12-14 21:24:28'),
-(2, 'Branch Manager', 'branch-manager', '2025-12-14 21:24:28', '2025-12-14 21:24:28'),
-(3, 'Loan Officer', 'loan-officer', '2025-12-14 21:24:28', '2025-12-14 21:24:28'),
-(4, 'Bank Teller', 'bank-teller', '2025-12-14 21:24:28', '2025-12-14 21:24:28'),
-(5, 'Customer', 'customer', '2025-12-14 21:24:28', '2025-12-14 21:24:28');
+(1, 'Admin', 'admin', '2025-12-17 14:01:39', '2025-12-17 14:01:39'),
+(2, 'Branch Manager', 'branch-manager', '2025-12-17 14:01:39', '2025-12-17 14:01:39'),
+(3, 'Loan Officer', 'loan-officer', '2025-12-17 14:01:39', '2025-12-17 14:01:39'),
+(4, 'Bank Teller', 'bank-teller', '2025-12-17 14:01:39', '2025-12-17 14:01:39'),
+(5, 'Customer', 'customer', '2025-12-17 14:01:39', '2025-12-17 14:01:39');
 
 -- --------------------------------------------------------
 
@@ -502,8 +490,9 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('F9dZ19snv98D4g5HTGKr8jPqtwryu67XWB0ufdDc', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiSkwwM2EwNWptcTBKOU5MNW9UYnZJRVk1UXMxVU16S2NxQWVqSk12cyI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1765777201),
-('HmYmFurhZLFEK1uNfI0pShv4g63ebXK4LWz1vNg0', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiYWhCRDFxWmUzbHE3YkwzdzFsbkozQWVkQVM5QlpZTXo0ZTFCb2Z4VyI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1766026138);
+('B6lefxoJEZWGJKQdGLbDTea8cnCsIjh4nZZIbK4y', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiZGtTd25RWEZiUGpQdlFuZGNhcDh1QkdzZXdES3ZIbUxwcFYzRDUyciI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1765829926),
+('oWrpHH4yr4xTqOVYyiPp4eZX1Ob8FVZb6DwCFN4C', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoic205WUhadk1hWGoyc3ZqTm5BaTU4M1hJUk5PUnpBYzg1NnBJZjdwTSI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1766002439),
+('suYwd3KT3xGqMjOcSctKP1IEKloYGeLcKWpEqm9F', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiejdTNjZGN240ek1YZ0dqcVo2U0JyUWdFNHlsaXVhQ2VhT1ZZMlNkUCI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1765925253);
 
 -- --------------------------------------------------------
 
@@ -575,12 +564,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `role_id`, `name`, `email`, `phone`, `email_verified_at`, `password`, `status`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 1, 'System Admin', 'admin@finserve.com', '0700000001', NULL, '$2y$12$EM8SXSkzCjpv4/UA7dL1P.TNwjAZF.2xdv0t6Y0F/EBNmtibw0IBK', 'active', NULL, '2025-12-16 22:03:12', '2025-12-16 22:03:12'),
-(2, 2, 'Branch Manager', 'manager@finserve.com', '0700000002', NULL, '$2y$12$689s8zSxn4b8YPTzm0uE8Ol9d1NztFqkS7SFIWj1yafmhPt5BIGuG', 'active', NULL, '2025-12-16 22:03:12', '2025-12-16 22:03:12'),
-(3, 3, 'Loan Officer', 'officer@finserve.com', '0700000003', NULL, '$2y$12$78ydKayrLChKDZvr.fVPvewuhD9o2a8Wt7lslWGkPw2iy2RO6KSBe', 'active', NULL, '2025-12-16 22:03:12', '2025-12-16 22:03:12'),
-(4, 4, 'Bank Teller', 'teller@finserve.com', '0700000004', NULL, '$2y$12$BFcnIkoD9eMHmJhzuYblbultxxRYe8jIVDNZDI7k4mCXNIe867nBm', 'active', NULL, '2025-12-16 22:03:12', '2025-12-16 22:03:12'),
-(5, 5, 'Customer User', 'customer@finserve.com', '0700000005', NULL, '$2y$12$6IBSIFkPi8mZNBRdcL2CHexi62uMOM6FII8mjebY9hqhmyvwzaVfK', 'active', NULL, '2025-12-16 22:03:13', '2025-12-16 22:03:13'),
-(6, 5, 'Sima', 'sima@finserve.com', NULL, NULL, '$2y$12$crUTAp/l2oTTM2G5ep3/u.AnOe.hIbou5Qv0ITCkhK1Cn81xpnWDe', 'active', NULL, '2025-12-17 22:47:15', '2025-12-17 22:47:15');
+(1, 1, 'System Admin', 'admin@finserve.com', '0700000001', NULL, '$2y$12$fVL3nsHOM2MkdKV.Jv1Zh.T3cq1EzhrMiw21k.vfSJhMEhjIUmoPu', 'active', NULL, '2025-12-17 14:01:42', '2025-12-17 14:01:42'),
+(2, 2, 'Branch Manager', 'manager@finserve.com', '0700000002', NULL, '$2y$12$j0Jzdrb4BYeZB5lqTIzKleQ1Ge7pmTEFrrVeMO4QrZ./YnbzWbDTm', 'active', NULL, '2025-12-17 14:01:42', '2025-12-17 14:01:42'),
+(3, 3, 'Loan Officer', 'officer@finserve.com', '0700000003', NULL, '$2y$12$K8KD4T27kcg3dRUS0CGeQOrDgNwgwOhKNSEjvkvzsToQ80hwGk2Re', 'active', NULL, '2025-12-17 14:01:43', '2025-12-17 14:01:43'),
+(4, 4, 'Bank Teller', 'teller@finserve.com', '0700000004', NULL, '$2y$12$m5e0/31JzOmcO7t3i5eeyuF4j22kSop1htdKWMljsxasg4BFLN/Xq', 'active', NULL, '2025-12-17 14:01:44', '2025-12-17 14:01:44'),
+(5, 5, 'Customer User', 'customer@finserve.com', '0700000005', NULL, '$2y$12$wcUE3qpp0IynWE4XdDFxEeAErTSEoD/f/UflUCdva3DBfb/Gh3wIi', 'active', NULL, '2025-12-17 14:01:44', '2025-12-17 14:01:44');
 
 --
 -- Indexes for dumped tables
@@ -912,7 +900,7 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT for table `personal_access_tokens`
 --
 ALTER TABLE `personal_access_tokens`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `roles`
@@ -942,7 +930,7 @@ ALTER TABLE `transaction_types`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables
