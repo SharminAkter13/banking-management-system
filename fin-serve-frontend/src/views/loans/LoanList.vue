@@ -61,6 +61,7 @@ import AdminLayout from '@/components/layout/AdminLayout.vue'
 import { ref, onMounted } from 'vue'
 import { getLoans, deleteLoan as deleteLoanAPI } from './LoanService'
 import { useRouter } from 'vue-router'
+import { getUser } from '@/users/UserService';
 
 const loans = ref([])
 const router = useRouter()
@@ -83,6 +84,18 @@ const deleteLoan = async (id) => {
     console.error('Error deleting loan:', err)
   }
 }
+
+const debugUser = async () => {
+  try {
+    // This will fetch your profile using the token Axios is already sending
+    const user = await getUser('me'); 
+    console.log("Logged in as:", user.name);
+    console.log("Role ID:", user.role_id);
+    console.log("User Data:", user);
+  } catch (err) {
+    console.error("Even Profile is blocked:", err.response?.status);
+  }
+};
 
 onMounted(fetchLoans)
 </script>
