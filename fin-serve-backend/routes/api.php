@@ -13,6 +13,9 @@ use App\Http\Controllers\Dashboard\ManagerDashboardController;
 use App\Http\Controllers\Dashboard\OfficerDashboardController;
 use App\Http\Controllers\Dashboard\TellerDashboardController;
 use App\Models\Role;
+use App\Http\Controllers\Api\EmployeeController;
+use App\Models\Branch;
+
 
 Route::get('/roles', function () {
     return response()->json([
@@ -68,4 +71,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/loans', [LoanController::class, 'store'])->middleware('can:create,App\Models\Loan'); // Create a new loan
     Route::put('/loans/{loan}', [LoanController::class, 'update'])->middleware('can:update,App\Models\Loan'); // Update loan
     Route::delete('/loans/{loan}', [LoanController::class, 'destroy'])->middleware('can:delete,App\Models\Loan'); // Delete loan
+});
+
+
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('employees', EmployeeController::class);
+    
+    // Helpers for the Create form dropdowns
+    Route::get('branches', fn() => Branch::all());
+    Route::get('roles', fn() => Role::all());
 });
