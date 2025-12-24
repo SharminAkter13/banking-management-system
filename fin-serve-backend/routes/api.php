@@ -78,7 +78,11 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('employees', EmployeeController::class);
     
-    // Helpers for the Create form dropdowns
-    Route::get('branches', fn() => Branch::all());
-    Route::get('roles', fn() => Role::all());
+   Route::get('/branches', function () {
+        return response()->json(Branch::all());
+    });
+
+    Route::get('/roles', function () {
+        return response()->json(Role::all());
+    });
 });

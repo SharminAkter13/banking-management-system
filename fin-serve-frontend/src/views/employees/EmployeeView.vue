@@ -1,4 +1,6 @@
 <template>
+  <AdminLayout>
+
   <div v-if="employee" class="max-w-4xl mx-auto space-y-6">
     <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
       <div class="flex items-center justify-between mb-6">
@@ -45,12 +47,15 @@
       </div>
     </div>
   </div>
+    </AdminLayout>
+
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import api from '@/api';
+import api from '@/services/api';
+import AdminLayout from '@/components/layout/AdminLayout.vue'
 
 const route = useRoute();
 const employee = ref(null);

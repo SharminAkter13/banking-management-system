@@ -1,4 +1,6 @@
 <template>
+  <AdminLayout>
+
   <div class="max-w-3xl mx-auto rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
     <h3 class="text-xl font-bold mb-6 text-gray-800 dark:text-white/90">Add New Employee</h3>
     
@@ -16,19 +18,26 @@
           <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
           <input v-model="form.password" type="password" class="w-full rounded-lg border border-gray-300 p-2.5 dark:bg-gray-700" required />
         </div>
-        <div>
-          <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Branch</label>
-          <select v-model="form.branch_id" class="w-full rounded-lg border border-gray-300 p-2.5 dark:bg-gray-700" required>
-            <option v-for="branch in branches" :key="branch.id" :value="branch.id">{{ branch.branch_name }}</option>
-          </select>
-        </div>
-        <div>
-          <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Role</label>
-          <select v-model="form.role_id" class="w-full rounded-lg border border-gray-300 p-2.5 dark:bg-gray-700" required>
-            <option v-for="role in roles" :key="role.id" :value="role.id">{{ role.name }}</option>
-          </select>
-        </div>
-        <div>
+<div>
+  <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Branch</label>
+  <select v-model="form.branch_id" class="w-full rounded-lg border border-gray-300 p-2.5 dark:bg-gray-700 text-black" required>
+    <option value="" disabled>Select a branch</option>
+    <option v-for="branch in branches" :key="branch.id" :value="branch.id">
+      {{ branch.branch_name }}
+    </option>
+  </select>
+</div>
+
+<div>
+  <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Role</label>
+  <select v-model="form.role_id" class="w-full rounded-lg border border-gray-300 p-2.5 dark:bg-gray-700 text-black" required>
+    <option value="" disabled>Select a role</option>
+    <option v-for="role in roles" :key="role.id" :value="role.id">
+      {{ role.name }}
+    </option>
+  </select>
+</div>
+<div>
           <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Position</label>
           <input v-model="form.position" type="text" placeholder="e.g. Senior Teller" class="w-full rounded-lg border border-gray-300 p-2.5 dark:bg-gray-700" required />
         </div>
@@ -40,12 +49,15 @@
       </div>
     </form>
   </div>
+    </AdminLayout>
+
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import api from '@/api';
+import api from '@/services/api';
+import AdminLayout from '@/components/layout/AdminLayout.vue'
 
 const router = useRouter();
 const branches = ref([]);
@@ -62,11 +74,25 @@ const form = ref({
 });
 
 onMounted(async () => {
-  const [bRes, rRes] = await Promise.all([api.get('/branches'), api.get('/roles')]);
-  branches.value = bRes.data;
-  roles.value = rRes.data.filter(r => r.slug !== 'customer'); // Filter out customer role
-});
+  try {
+    const [bRes, rRes] = await Promise.all([
+      api.get('/branches'), 
+      api.get('/roles')
+    ]);
 
+    // Check if data is nested inside .data.data (common in Laravel Resources) 
+    // or just .data
+    branches.value = bRes.data.data || bRes.data;
+    
+    const allRoles = rRes.data.data || rRes.data;
+    roles.value = allRoles.filter(r => r.slug !== 'customer');
+    
+    console.log('Branches loaded:', branches.value); // Debugging
+    console.log('Roles loaded:', roles.value);       // Debugging
+  } catch (error) {
+    console.error("Failed to fetch dropdown data:", error);
+  }
+});
 const handleSubmit = async () => {
   try {
     await api.post('/employees', form.value);

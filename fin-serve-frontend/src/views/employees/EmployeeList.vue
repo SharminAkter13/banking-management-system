@@ -1,8 +1,10 @@
 <template>
+  <AdminLayout>
+
   <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
     <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
       <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">Employees</h3>
-      <router-link to="/employees/create" class="flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700">
+      <router-link to="/admin/employees/create" class="flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700">
         Add Employee
       </router-link>
     </div>
@@ -44,11 +46,14 @@
       </table>
     </div>
   </div>
+    </AdminLayout>
+
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import api from '@/api';
+import api from '@/services/api';
+import AdminLayout from '@/components/layout/AdminLayout.vue'
 
 const employees = ref([]);
 

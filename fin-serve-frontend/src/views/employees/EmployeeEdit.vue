@@ -1,4 +1,6 @@
 <template>
+  <AdminLayout>
+
   <div class="max-w-3xl mx-auto rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
     <h3 class="text-xl font-bold mb-6 text-gray-800 dark:text-white/90">Edit Employee</h3>
     
@@ -30,12 +32,15 @@
       </div>
     </form>
   </div>
+    </AdminLayout>
+
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import api from '@/api';
+import api from '@/services/api';
+import AdminLayout from '@/components/layout/AdminLayout.vue'
 
 const route = useRoute();
 const router = useRouter();
