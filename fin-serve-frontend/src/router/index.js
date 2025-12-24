@@ -141,6 +141,33 @@ const router = createRouter({
       meta: { title: 'Edit Branch', requiresAuth: true, roles: ['admin', 'branch-manager'] }
     },
 
+// ================= Employee Management =================
+    {
+      path: '/admin/employees',
+      name: 'EmployeeList',
+      component: () => import('@/views/employees/EmployeeList.vue'),
+      meta: { title: 'Employee List', requiresAuth: true, roles: ['admin', 'branch-manager'] }
+    },
+    {
+      path: '/admin/employees/create',
+      name: 'EmployeeCreate',
+      component: () => import('@/views/employees/EmployeeCreate.vue'),
+      meta: { title: 'Add Employee', requiresAuth: true, roles: ['admin', 'branch-manager'] }
+    },
+    {
+      path: '/admin/employees/:id', // FIXED: Removed /edit for viewing
+      name: 'EmployeeView',
+      component: () => import('@/views/employees/EmployeeView.vue'),
+      meta: { title: 'View Employee', requiresAuth: true, roles: ['admin', 'branch-manager'] }
+    },
+    {
+      path: '/admin/employees/:id/edit',
+      name: 'EmployeeEdit',
+      component: () => import('@/views/employees/EmployeeEdit.vue'),
+      meta: { title: 'Edit Employee', requiresAuth: true, roles: ['admin', 'branch-manager'] }
+    },
+
+
     // ================= Loan Management =================
     {
       path: '/admin/loans',

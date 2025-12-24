@@ -120,6 +120,12 @@ const menuGroups = computed(() => [
       },
       {
         icon: UserCircleIcon,
+        name: "Employee",
+        path: "/admin/employees",
+        roles: ['admin', 'branch-manager']
+      },
+      {
+        icon: UserCircleIcon,
         name: "Loans",
         path: "/admin/loans",
         roles: ['admin', 'branch-manager','loan-officer'] // Adding loan management to the sidebar
