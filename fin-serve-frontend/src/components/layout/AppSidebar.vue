@@ -130,6 +130,18 @@ const menuGroups = computed(() => [
         path: "/admin/loans",
         roles: ['admin', 'branch-manager','loan-officer'] // Adding loan management to the sidebar
       },
+       {
+        icon: UserCircleIcon,
+        name: "Loan Types",
+        path: "/admin/loan-types",
+        roles: ['admin', 'branch-manager','loan-officer'] // Adding loan management to the sidebar
+      },
+      {
+        icon: UserCircleIcon,
+        name: "Loan Payments",
+        path: "/customer/loan-payments",
+        roles: ['admin', 'branch-manager','loan-officer','customer'] // Adding loan management to the sidebar
+      },
     ],
   },
 ]);

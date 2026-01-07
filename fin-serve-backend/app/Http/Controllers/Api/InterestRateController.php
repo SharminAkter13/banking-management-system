@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\InterestRate;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class InterestRateController extends Controller
 {

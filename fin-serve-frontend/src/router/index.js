@@ -175,6 +175,7 @@ const router = createRouter({
       component: () => import('@/views/loans/LoanList.vue'),
       meta: { title: 'Loans', requiresAuth: true, roles: ['admin', 'branch-manager','loan-officer'] }
     },
+    
     {
       path: '/admin/loans/create',
       name: 'LoanCreate',
@@ -187,6 +188,34 @@ const router = createRouter({
       component: () => import('@/views/loans/LoanForm.vue'),
       meta: { title: 'Edit Loan', requiresAuth: true, roles: ['admin', 'branch-manager','loan-officer'] }
     },
+
+     {
+      path: '/admin/loan-types',
+      name: 'LoanType',
+      component: () => import('@/views/loans/LoanType.vue'),
+      meta: { title: 'Loan-types', requiresAuth: true, roles: ['admin', 'branch-manager','loan-officer'] }
+    },
+     {
+      path: '/customer/loan-payments',
+      name: 'LoanPayment',
+      component: () => import('@/views/loans/LoanPayment.vue'),
+      meta: { title: 'Loan-payments', requiresAuth: true, roles: ['admin', 'branch-manager','loan-officer','customer'] }
+    },
+    {
+  path: '/admin/transactions',
+  component: () => import('@/views/transactions/TransactionList.vue'),
+  meta: { requiresAuth: true, roles: ['admin','bank-teller','branch-manager'] }
+},
+{
+  path: '/admin/transactions/create',
+  component: () => import('@/views/transactions/TransactionForm.vue'),
+  meta: { requiresAuth: true, roles: ['admin','bank-teller'] }
+},
+{
+  path: '/admin/transactions/:id/edit',
+  component: () => import('@/views/transactions/TransactionForm.vue'),
+  meta: { requiresAuth: true, roles: ['admin','bank-teller'] }
+},
 
     // ================= Errors =================
     {

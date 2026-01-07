@@ -2,87 +2,88 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+// Core API Controllers
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\BranchController;
-use App\Http\Controllers\Api\CustomerController;
-use App\Http\Controllers\Api\LoanController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\RoleController;
+use App\Http\Controllers\Api\BranchController;
+use App\Http\Controllers\Api\EmployeeController;
+use App\Http\Controllers\Api\CustomerController;
+use App\Http\Controllers\Api\KYCFormController;
+
+// Banking API Controllers
+use App\Http\Controllers\Api\AccountController;
+use App\Http\Controllers\Api\TransactionController;
+use App\Http\Controllers\Api\LoanController;
+use App\Http\Controllers\Api\InstallmentController;
+use App\Http\Controllers\Api\LoanPaymentController;
+use App\Http\Controllers\Api\LoanTypeController;
+
+
+// Workflow API Controllers
+use App\Http\Controllers\Api\ApprovalController;
+use App\Http\Controllers\Api\ApprovalStepController;
+use App\Http\Controllers\Api\ApprovalActionController;
+
+// Dashboard Controllers (Outside Api Folder)
 use App\Http\Controllers\Dashboard\AdminDashboardController;
 use App\Http\Controllers\Dashboard\CustomerDashboardController;
 use App\Http\Controllers\Dashboard\ManagerDashboardController;
 use App\Http\Controllers\Dashboard\OfficerDashboardController;
 use App\Http\Controllers\Dashboard\TellerDashboardController;
-use App\Models\Role;
-use App\Http\Controllers\Api\EmployeeController;
-use App\Models\Branch;
 
-
-Route::get('/roles', function () {
-    return response()->json([
-        'data' => Role::all() // Matches the data structure expected by your Vue code
-    ]);
-});
-
+/*
+|--------------------------------------------------------------------------
+| Public Routes
+|--------------------------------------------------------------------------
+*/
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/register', [AuthController::class, 'register'])->name('register');
+Route::get('/roles', [RoleController::class, 'index']); // Public role listing for registration
 
+/*
+|--------------------------------------------------------------------------
+| Protected API Routes (Sanctum)
+|--------------------------------------------------------------------------
+*/
 Route::middleware('auth:sanctum')->group(function () {
 
-    // Authenticated user info
+    // User Profile & Authentication
     Route::get('/me', [UserController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    // Users CRUD (with policies)
-    Route::get('/users', [UserController::class, 'index'])->middleware('can:viewAny,App\Models\User');
-    Route::get('/users/{user}', [UserController::class, 'show'])->middleware('can:view,user');
-    Route::post('/users', [UserController::class, 'store'])->middleware('can:create,App\Models\User');
-    Route::put('/users/{user}', [UserController::class, 'update'])->middleware('can:update,user');
-    Route::delete('/users/{user}', [UserController::class, 'destroy'])->middleware('can:delete,user');
+    // 1. Core Resources
+    Route::apiResource('users', UserController::class);
+    Route::apiResource('branches', BranchController::class);
+    Route::apiResource('employees', EmployeeController::class);
+    Route::apiResource('customers', CustomerController::class);
+    Route::apiResource('kyc-forms', KYCFormController::class); // Matches kyc_forms table
 
-    // Role-specific dashboards
+    // 2. Banking Resources
+    Route::apiResource('accounts', AccountController::class); // Matches accounts table
+    Route::apiResource('transactions', TransactionController::class); // Matches transactions table
+    
+    // 3. Loan Management
+    Route::apiResource('loans', LoanController::class); // Matches loans table
+    Route::apiResource('installments', InstallmentController::class); // Matches installments table
+    Route::apiResource('loan-payments', LoanPaymentController::class); // Matches loan_payments table
+    Route::apiResource('loan-types', LoanTypeController::class);
+
+
+    // 4. Approval Workflow System
+    Route::apiResource('approvals', ApprovalController::class); // Matches approvals table
+    Route::apiResource('approval-steps', ApprovalStepController::class); // Matches approval_steps table
+    Route::apiResource('approval-actions', ApprovalActionController::class); // Matches approval_actions table
+
+    /*
+    |----------------------------------------------------------------------
+    | Role-Based Dashboard Routes
+    |----------------------------------------------------------------------
+    */
     Route::middleware('role:admin')->get('/admin/dashboard', AdminDashboardController::class);
     Route::middleware('role:branch-manager')->get('/manager/dashboard', ManagerDashboardController::class);
     Route::middleware('role:loan-officer')->get('/officer/dashboard', OfficerDashboardController::class);
     Route::middleware('role:bank-teller')->get('/teller/dashboard', TellerDashboardController::class);
     Route::middleware('role:customer')->get('/customer/dashboard', CustomerDashboardController::class);
-
-});
-Route::middleware('auth:sanctum')->group(function () {
-    // Customer Routes
-    Route::get('/customers', [CustomerController::class, 'index']);    // List customers
-    Route::get('/customers/{customer}', [CustomerController::class, 'show']);    // Show single customer
-    Route::post('/customers', [CustomerController::class, 'store']);    // Create new customer
-    Route::put('/customers/{customer}', [CustomerController::class, 'update']);   // Update customer
-    Route::delete('/customers/{customer}', [CustomerController::class, 'destroy']);   // Delete customer
-});
-
-Route::middleware('auth:sanctum')->group(function () {
-    // Branch Routes
-    Route::get('/branches', [BranchController::class, 'index']);  // List all branches
-    Route::get('/branches/{id}', [BranchController::class, 'show']);  // Get a single branch
-    Route::post('/branches', [BranchController::class, 'store']);  // Create a new branch
-    Route::put('/branches/{id}', [BranchController::class, 'update']);  // Update a branch
-    Route::delete('/branches/{id}', [BranchController::class, 'destroy']);  // Delete a branch
-});
-
-Route::middleware('auth:sanctum')->group(function () {
-   Route::get('/loans', [LoanController::class, 'index'])->middleware('can:viewAny,App\Models\Loan'); // Get all loans
-    Route::get('/loans/{loan}', [LoanController::class, 'show'])->middleware('can:view,App\Models\Loan'); // Get a single loan
-    Route::post('/loans', [LoanController::class, 'store'])->middleware('can:create,App\Models\Loan'); // Create a new loan
-    Route::put('/loans/{loan}', [LoanController::class, 'update'])->middleware('can:update,App\Models\Loan'); // Update loan
-    Route::delete('/loans/{loan}', [LoanController::class, 'destroy'])->middleware('can:delete,App\Models\Loan'); // Delete loan
-});
-
-
-
-Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('employees', EmployeeController::class);
-    
-   Route::get('/branches', function () {
-        return response()->json(Branch::all());
-    });
-
-    Route::get('/roles', function () {
-        return response()->json(Role::all());
-    });
 });

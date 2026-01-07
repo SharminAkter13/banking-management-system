@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Installment;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class InstallmentController extends Controller
 {

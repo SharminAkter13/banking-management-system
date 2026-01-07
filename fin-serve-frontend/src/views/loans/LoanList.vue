@@ -61,7 +61,7 @@ import AdminLayout from '@/components/layout/AdminLayout.vue'
 import { ref, onMounted } from 'vue'
 import { getLoans, deleteLoan as deleteLoanAPI } from './LoanService'
 import { useRouter } from 'vue-router'
-import { getUser } from '@/users/UserService';
+import { getUser } from '@/views/users/UserService'
 
 const loans = ref([])
 const router = useRouter()

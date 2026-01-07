@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\KycForm;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\Controller;
 
 class KYCFormController extends Controller
 {

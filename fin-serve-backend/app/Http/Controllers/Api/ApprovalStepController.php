@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\ApprovalStep;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class ApprovalStepController extends Controller
 {

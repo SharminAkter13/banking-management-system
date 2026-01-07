@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class TransactionController extends Controller
 {
@@ -53,4 +54,3 @@ public function store(Request $request) {
         return response()->json(['message' => 'Deleted']);
     }
 }
-________________________________________

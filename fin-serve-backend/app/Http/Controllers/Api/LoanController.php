@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Loan;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class LoanController extends Controller
 {
