@@ -14,21 +14,15 @@ class InstallmentController extends Controller
         );
     }
 
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'loan_id' => 'required|exists:loans,id',
-            'due_date' => 'required|date',
-            'amount_due' => 'required|numeric',
-            'amount_paid' => 'nullable|numeric',
-            'status' => 'in:Pending,Paid,Overdue'
-        ]);
-
-        $installment = Installment::create($validated);
-
-        return response()->json($installment, 201);
-    }
-
+public function store(Request $request) {
+    $validated = $request->validate([
+        'loan_id' => 'required|exists:loans,id',
+        'due_date' => 'required|date',
+        'amount_due' => 'required|numeric',
+        'status' => 'in:Pending,Paid,Overdue'
+    ]);
+    return response()->json(Installment::create($validated), 201);
+}
     public function show($id)
     {
         return response()->json(

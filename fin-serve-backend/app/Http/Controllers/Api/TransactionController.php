@@ -14,23 +14,17 @@ class TransactionController extends Controller
         );
     }
 
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'account_id' => 'required|exists:accounts,account_id',
-            'transaction_type_id' => 'required|exists:transaction_types,id',
-            'transaction_status_id' => 'required|exists:transaction_status,id',
-            'amount' => 'required|numeric',
-            'transaction_date' => 'required|date',
-            'created_by' => 'required|exists:users,id',
-            'notes' => 'nullable'
-        ]);
-
-        $transaction = Transaction::create($validated);
-
-        return response()->json($transaction, 201);
-    }
-
+public function store(Request $request) {
+    $validated = $request->validate([
+        'account_id' => 'required|exists:accounts,id',
+        'transaction_type_id' => 'required|exists:transaction_types,id',
+        'transaction_status_id' => 'required|exists:transaction_statuses,id',
+        'amount' => 'required|numeric',
+        'transaction_date' => 'required|date',
+        'created_by' => 'required|exists:users,id'
+    ]);
+    return response()->json(Transaction::create($validated), 201);
+}
     public function show($id)
     {
         return response()->json(

@@ -14,22 +14,17 @@ class AccountController extends Controller
         );
     }
 
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'customer_id' => 'required|exists:customers,id',
-            'branch_id' => 'required|exists:branches,id',
-            'account_type_id' => 'required|exists:account_types,id',
-            'account_status_id' => 'required|exists:account_status,id',
-            'balance' => 'numeric',
-            'opened_date' => 'required|date'
-        ]);
-
-        $account = Account::create($validated);
-
-        return response()->json($account, 201);
-    }
-
+public function store(Request $request) {
+    $validated = $request->validate([
+        'customer_id' => 'required|exists:customers,id',
+        'branch_id' => 'required|exists:branches,id',
+        'account_type_id' => 'required|exists:account_types,id',
+        'account_status_id' => 'required|exists:account_statuses,id',
+        'balance' => 'numeric',
+        'opened_date' => 'required|date'
+    ]);
+    return response()->json(Account::create($validated), 201);
+}
     public function show($id)
     {
         return response()->json(

@@ -12,17 +12,13 @@ use Illuminate\Http\Request;
 
 class ApprovalActionController extends Controller
 {
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'approval_step_id' => 'required|exists:approval_steps,id',
-            'approved_by' => 'required|exists:users,id',
-            'action' => 'required|in:Approved,Rejected',
-            'comments' => 'nullable'
-        ]);
-
-        $action = ApprovalAction::create($validated);
-
-        return response()->json($action, 201);
-    }
+public function store(Request $request) {
+    $validated = $request->validate([
+        'approval_step_id' => 'required|exists:approval_steps,id',
+        'approved_by' => 'required|exists:users,id',
+        'action' => 'required|in:Approved,Rejected',
+        'comments' => 'nullable'
+    ]);
+    return response()->json(ApprovalAction::create($validated), 201);
+}
 }
