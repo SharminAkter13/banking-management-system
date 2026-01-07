@@ -1,15 +1,58 @@
 <?php
 
-namespace App\Models;
+namespace App\Http\Controllers\Api;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\InterestRate;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class InterestRate extends Model
+class InterestRateController extends Controller
 {
-    protected $fillable = ['account_type_id','rate','effective_date'];
-
-    public function accountType()
+    public function index()
     {
-        return $this->belongsTo(AccountType::class);
+        return response()->json(
+            InterestRate::with('accountType')->get()
+        );
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'account_type_id' => 'required|exists:account_types,id',
+            'rate' => 'required|numeric',
+            'effective_date' => 'required|date'
+        ]);
+
+        $rate = InterestRate::create($validated);
+
+        return response()->json($rate, 201);
+    }
+
+    public function show($id)
+    {
+        return response()->json(
+            InterestRate::with('accountType')->findOrFail($id)
+        );
+    }
+
+    public function update(Request $request, $id)
+    {
+        $rate = InterestRate::findOrFail($id);
+
+        $validated = $request->validate([
+            'account_type_id' => 'required|exists:account_types,id',
+            'rate' => 'required|numeric',
+            'effective_date' => 'required|date'
+        ]);
+
+        $rate->update($validated);
+
+        return response()->json($rate);
+    }
+
+    public function destroy($id)
+    {
+        InterestRate::findOrFail($id)->delete();
+        return response()->json(['message' => 'Deleted']);
     }
 }

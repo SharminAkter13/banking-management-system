@@ -51,7 +51,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import AdminLayout from '@/components/layout/AdminLayout.vue'
-import { getTransactions, deleteTransaction } from '@/TransactionService'
+import { getTransactions, deleteTransaction } from './TransactionService'
 
 const transactions = ref([])
 

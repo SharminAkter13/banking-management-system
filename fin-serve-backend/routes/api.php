@@ -66,7 +66,9 @@ Route::middleware('auth:sanctum')->group(function () {
     
     // 3. Loan Management
     Route::apiResource('loans', LoanController::class); // Matches loans table
-    Route::apiResource('installments', InstallmentController::class); // Matches installments table
+    Route::apiResource('installments', InstallmentController::class)->only(['index','show']);
+
+    Route::post('installments/pay', [InstallmentPaymentController::class,'pay']);
     Route::apiResource('loan-payments', LoanPaymentController::class); // Matches loan_payments table
     Route::apiResource('loan-types', LoanTypeController::class);
 

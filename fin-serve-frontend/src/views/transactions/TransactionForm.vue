@@ -45,7 +45,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AdminLayout from '@/components/layout/AdminLayout.vue'
-import { createTransaction, getTransaction, updateTransaction } from '@/TransactionService'
+import { createTransaction, getTransaction, updateTransaction } from './TransactionService'
 
 const route = useRoute()
 const router = useRouter()

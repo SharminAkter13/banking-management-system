@@ -147,7 +147,19 @@ const menuGroups = computed(() => [
   name: 'Transactions', 
   path: '/admin/transactions',
   roles: ['admin','bank-teller','branch-manager']
-}
+},
+{
+  icon: UserCircleIcon,
+  name: "Installments",
+  path: "/loan/installments",
+  roles: ['admin','branch-manager','loan-officer','customer']
+},
+ {
+        icon: UserCircleIcon,
+        name: "Interest Rates",
+        path: "/admin/interest-rates",
+        roles: ['admin', 'branch-manager']  // Only admin & branch manager can see
+      },
 
     ],
   },

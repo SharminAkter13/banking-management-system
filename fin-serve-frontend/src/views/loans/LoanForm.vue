@@ -1,82 +1,145 @@
 <template>
   <AdminLayout>
     <div class="flex items-center justify-between mb-7">
-      <h2 class="text-xl font-semibold text-gray-800 dark:text-white/90">
+      <h2 class="text-xl font-semibold">
         {{ isEdit ? 'Edit Loan' : 'Create Loan' }}
       </h2>
-      <router-link to="/admin/loans" class="px-4 py-2 text-sm border rounded-lg hover:bg-gray-50 dark:border-gray-800">
-        Back to List
+
+      <router-link to="/admin/loans" class="px-4 py-2 border rounded-lg">
+        Back
       </router-link>
     </div>
 
-    <div class="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03] max-w-2xl">
+    <div class="bg-white p-6 rounded-xl border max-w-2xl">
       <form @submit.prevent="submitForm" class="space-y-5">
-        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
-          <div class="flex flex-col gap-2">
-            <label class="text-sm font-medium">Customer</label>
-            <input v-model="form.customer_id" type="number" class="p-2.5 border rounded-lg dark:bg-gray-900 dark:border-gray-800" required />
+
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label>Customer ID</label>
+            <input v-model="form.customer_id" type="number" class="input" required />
           </div>
-          <div class="flex flex-col gap-2">
-            <label class="text-sm font-medium">Branch</label>
-            <input v-model="form.branch_id" type="number" class="p-2.5 border rounded-lg dark:bg-gray-900 dark:border-gray-800" required />
+
+          <div>
+            <label>Branch ID</label>
+            <input v-model="form.branch_id" type="number" class="input" required />
           </div>
-          <div class="flex flex-col gap-2">
-            <label class="text-sm font-medium">Loan Type</label>
-            <input v-model="form.loan_type_id" type="number" class="p-2.5 border rounded-lg dark:bg-gray-900 dark:border-gray-800" required />
+
+          <div>
+            <label>Loan Type ID</label>
+            <input v-model="form.loan_type_id" type="number" class="input" required />
           </div>
-          <div class="flex flex-col gap-2">
-            <label class="text-sm font-medium">Principal Amount</label>
-            <input v-model="form.principal_amount" type="number" class="p-2.5 border rounded-lg dark:bg-gray-900 dark:border-gray-800" required />
+
+          <div>
+            <label>Principal Amount</label>
+            <input v-model.number="form.principal_amount" type="number" class="input" required />
           </div>
-          <div class="flex flex-col gap-2">
-            <label class="text-sm font-medium">Status</label>
-            <input v-model="form.status" type="text" class="p-2.5 border rounded-lg dark:bg-gray-900 dark:border-gray-800" required />
+
+          <div>
+            <label>Interest Rate (%)</label>
+            <input v-model.number="form.interest_rate" type="number" step="0.01" class="input" required />
+          </div>
+
+          <div>
+            <label>Duration (Months)</label>
+            <input v-model.number="form.duration_months" type="number" class="input" required />
+          </div>
+
+          <div>
+            <label>EMI Amount</label>
+            <input :value="emi" disabled class="input bg-gray-100" />
+          </div>
+
+          <div>
+            <label>Total Payable</label>
+            <input :value="totalPayable" disabled class="input bg-gray-100" />
+          </div>
+
+          <div>
+            <label>Status</label>
+            <select v-model="form.status" class="input">
+              <option>Pending</option>
+              <option>Active</option>
+              <option>Closed</option>
+              <option>Rejected</option>
+              <option>Defaulted</option>
+            </select>
           </div>
         </div>
-        <div class="flex justify-end pt-4">
-          <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-            {{ isEdit ? 'Update Loan' : 'Save Loan' }}
-          </button>
-        </div>
+
+        <button class="btn-primary">
+          {{ isEdit ? 'Update Loan' : 'Create Loan' }}
+        </button>
       </form>
     </div>
   </AdminLayout>
 </template>
 
 <script setup>
-import AdminLayout from '@/components/layout/AdminLayout.vue'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getLoan, createLoan, updateLoan } from './LoanService'
+import AdminLayout from '@/components/layout/AdminLayout.vue'
 
 const route = useRoute()
 const router = useRouter()
-const isEdit = ref(!!route.params.id)
-const form = ref({ customer_id: '', branch_id: '', loan_type_id: '', principal_amount: '', status: '' })
 
-const fetchLoanData = async (id) => {
-  try {
-    const res = await getLoan(id)
-    form.value = { ...res.data }
-  } catch (err) {
-    console.error('Error fetching loan:', err)
-  }
+const isEdit = ref(!!route.params.id)
+
+const form = ref({
+  customer_id: '',
+  branch_id: '',
+  loan_type_id: '',
+  principal_amount: 0,
+  interest_rate: 0,
+  duration_months: 1,
+  emi_amount: 0,
+  total_payable: 0,
+  remaining_balance: 0,
+  status: 'Pending'
+})
+
+/* ===== Banking Calculations ===== */
+
+const totalPayable = computed(() => {
+  const interest = (form.value.principal_amount * form.value.interest_rate) / 100
+  return Number(form.value.principal_amount + interest).toFixed(2)
+})
+
+const emi = computed(() => {
+  if (!form.value.duration_months) return 0
+  return (totalPayable.value / form.value.duration_months).toFixed(2)
+})
+
+watch([totalPayable, emi], () => {
+  form.value.total_payable = totalPayable.value
+  form.value.emi_amount = emi.value
+  if (!isEdit.value) form.value.remaining_balance = totalPayable.value
+})
+
+/* ===== Load ===== */
+
+const fetchLoan = async () => {
+  const res = await getLoan(route.params.id)
+  form.value = res.data
 }
 
+/* ===== Submit ===== */
+
 const submitForm = async () => {
-  try {
-    if (isEdit.value) {
-      await updateLoan(route.params.id, form.value)
-    } else {
-      await createLoan(form.value)
-    }
-    router.push('/admin/loans')
-  } catch (err) {
-    console.error('Error submitting form:', err)
+  if (isEdit.value) {
+    await updateLoan(route.params.id, form.value)
+  } else {
+    await createLoan(form.value)
   }
+  router.push('/admin/loans')
 }
 
 onMounted(() => {
-  if (isEdit.value) fetchLoanData(route.params.id)
+  if (isEdit.value) fetchLoan()
 })
 </script>
+
+<style scoped>
+.input { @apply w-full border rounded-lg px-3 py-2 }
+.btn-primary { @apply bg-blue-600 text-white px-6 py-2 rounded-lg }
+</style>
