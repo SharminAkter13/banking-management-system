@@ -142,6 +142,13 @@ const menuGroups = computed(() => [
         path: "/customer/loan-payments",
         roles: ['admin', 'branch-manager','loan-officer','customer'] // Adding loan management to the sidebar
       },
+      {
+  icon: UserCircleIcon, 
+  name: 'Transactions', 
+  path: '/admin/transactions',
+  roles: ['admin','bank-teller','branch-manager']
+}
+
     ],
   },
 ]);
