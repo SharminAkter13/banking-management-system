@@ -235,6 +235,18 @@ const router = createRouter({
       component: () => import('@/views/interests/InterestRateForm.vue'),
       meta: { title: 'CreateInterestRate', requiresAuth: true, roles: ['admin', 'branch-manager',] }
     },
+    {
+      path: '/admin/approvals',
+      name: 'ApprovalList',
+      component: () => import('@/views/approvals/ApprovalList.vue'),
+      meta: { title: 'ApprovalList', requiresAuth: true, roles: ['admin', 'branch-manager','loan-officer','bank-teller'] }
+    },
+    {
+      path: '/admin/approvals/:id',
+      name: 'ApprovalDetail',
+      component: () => import('@/views/approvals/ApprovalDetail.vue'),
+      meta: { title: 'ApprovalDetail', requiresAuth: true, roles: ['admin', 'branch-manager','loan-officer','bank-teller'] }
+    },
 
     // ================= Errors =================
     {

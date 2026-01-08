@@ -6,6 +6,7 @@ use App\Models\Branch;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+
 class BranchController extends Controller
 {
     public function index()
@@ -54,3 +55,4 @@ class BranchController extends Controller
         return response()->json(['message' => 'Deleted']);
     }
 }
+

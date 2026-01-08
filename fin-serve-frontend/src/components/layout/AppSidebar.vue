@@ -160,6 +160,13 @@ const menuGroups = computed(() => [
         path: "/admin/interest-rates",
         roles: ['admin', 'branch-manager']  // Only admin & branch manager can see
       },
+      {
+  icon: UserCircleIcon,
+  name: 'Approvals',
+  path: '/admin/approvals',
+  roles: ['admin','branch-manager','loan-officer','bank-teller']
+}
+
 
     ],
   },

@@ -1,10 +1,10 @@
 import api from '@/services/api'
 
-// Fetch all loans
-export const getLoans = () => api.get('/loans');
+// Fetch all loans with approvals and steps
+export const getLoans = () => api.get('/loans?include=approval.steps.role');
 
 // Fetch a single loan by ID
-export const getLoan = (id) => api.get(`/loans/${id}`);
+export const getLoan = (id) => api.get(`/loans/${id}?include=approval.steps.role`);
 
 // Create a new loan
 export const createLoan = (data) => api.post('/loans', data);
