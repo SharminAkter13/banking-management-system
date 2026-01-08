@@ -132,7 +132,7 @@ const router = createRouter({
       path: '/admin/branches/create',
       name: 'BranchCreate',
       component: () => import('@/views/branches/BranchForm.vue'),
-      meta: { title: 'Create Branch', requiresAuth: true, roles: ['admin', 'branch-manager'] }
+      meta: { title: 'Create Branch', requiresAuth: true, roles: ['admin'] }
     },
     {
       path: '/admin/branches/:id/edit',
@@ -173,20 +173,20 @@ const router = createRouter({
       path: '/admin/loans',
       name: 'LoanList',
       component: () => import('@/views/loans/LoanList.vue'),
-      meta: { title: 'Loans', requiresAuth: true, roles: ['admin', 'branch-manager','loan-officer'] }
+      meta: { title: 'Loans', requiresAuth: true, roles: ['admin', 'branch-manager','loan-officer','customer'] }
     },
     
     {
       path: '/admin/loans/create',
       name: 'LoanCreate',
       component: () => import('@/views/loans/LoanForm.vue'),
-      meta: { title: 'Create Loan', requiresAuth: true, roles: ['admin', 'branch-manager','loan-officer'] }
+      meta: { title: 'Create Loan', requiresAuth: true, roles: ['admin', 'branch-manager','loan-officer','customer'] }
     },
     {
       path: '/admin/loans/:id/edit',
       name: 'LoanEdit',
       component: () => import('@/views/loans/LoanForm.vue'),
-      meta: { title: 'Edit Loan', requiresAuth: true, roles: ['admin', 'branch-manager','loan-officer'] }
+      meta: { title: 'Edit Loan', requiresAuth: true, roles: ['admin', 'branch-manager','loan-officer','customer'] }
     },
 
      {
@@ -204,12 +204,12 @@ const router = createRouter({
     {
   path: '/admin/transactions',
   component: () => import('@/views/transactions/TransactionList.vue'),
-  meta: { requiresAuth: true, roles: ['admin','bank-teller','branch-manager'] }
+  meta: { requiresAuth: true, roles: ['admin','bank-teller','branch-manager','customer'] }
 },
 {
   path: '/admin/transactions/create',
   component: () => import('@/views/transactions/TransactionForm.vue'),
-  meta: { requiresAuth: true, roles: ['admin','bank-teller'] }
+  meta: { requiresAuth: true, roles: ['admin','bank-teller','customer'] }
 },
 {
   path: '/admin/transactions/:id/edit',

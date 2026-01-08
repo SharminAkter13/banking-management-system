@@ -31,4 +31,8 @@ class Branch extends Model
     {
         return $this->hasMany(Loan::class);
     }
+    public function customer()
+    {
+        return $this->hasOne(Customer::class);
+    }
 }

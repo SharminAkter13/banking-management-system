@@ -4,30 +4,30 @@
       <h2 class="text-xl font-semibold">Branches</h2>
       <router-link
         to="/admin/branches/create"
-        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
       >
         Create Branch
       </router-link>
     </div>
 
-    <div class="overflow-x-auto bg-white dark:bg-gray-900 border rounded-lg">
-      <table class="min-w-full">
-        <thead>
-          <tr class="bg-gray-100 dark:bg-gray-800 text-left">
-            <th class="px-4 py-2">Branch Name</th>
+    <div class="overflow-x-auto border rounded-lg bg-white dark:bg-gray-900 dark:border-gray-800">
+      <table class="min-w-full text-sm">
+        <thead class="bg-gray-100 dark:bg-gray-800">
+          <tr>
+            <th class="px-4 py-2">Name</th>
             <th class="px-4 py-2">Location</th>
             <th class="px-4 py-2">Manager</th>
             <th class="px-4 py-2">Contact</th>
-            <th class="px-4 py-2 text-right">Actions</th>
+            <th class="px-4 py-2">Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="branch in branches" :key="branch.id" class="border-b">
+          <tr v-for="branch in branches" :key="branch.id" class="border-b dark:border-gray-700">
             <td class="px-4 py-2">{{ branch.branch_name }}</td>
             <td class="px-4 py-2">{{ branch.location }}</td>
-            <td class="px-4 py-2">{{ branch.manager?.name || '—' }}</td>
-            <td class="px-4 py-2">{{ branch.contact || '—' }}</td>
-            <td class="px-4 py-2 text-right space-x-2">
+            <td class="px-4 py-2">{{ branch.manager?.name || '-' }}</td>
+            <td class="px-4 py-2">{{ branch.contact || '-' }}</td>
+            <td class="px-4 py-2 flex gap-2">
               <router-link :to="`/admin/branches/${branch.id}/edit`" class="text-blue-600 hover:underline">Edit</router-link>
               <button @click="deleteBranch(branch.id)" class="text-red-600 hover:underline">Delete</button>
             </td>
@@ -42,18 +42,20 @@
 </template>
 
 <script setup>
-import AdminLayout from '@/components/layout/AdminLayout.vue'
 import { ref, onMounted } from 'vue'
+import { useAuthStore } from '@/stores/auth'
 import { getBranches, deleteBranch as deleteBranchAPI } from './BranchService'
+import AdminLayout from '@/components/layout/AdminLayout.vue'
 
 const branches = ref([])
+const auth = useAuthStore()
 
 const fetchBranches = async () => {
   try {
     const res = await getBranches()
     branches.value = res.data
   } catch (err) {
-    console.error('Error fetching branches:', err)
+    console.error(err)
   }
 }
 
@@ -63,7 +65,7 @@ const deleteBranch = async (id) => {
     await deleteBranchAPI(id)
     branches.value = branches.value.filter(b => b.id !== id)
   } catch (err) {
-    console.error('Error deleting branch:', err)
+    console.error(err)
   }
 }
 

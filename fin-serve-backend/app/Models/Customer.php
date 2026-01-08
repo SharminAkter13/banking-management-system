@@ -29,4 +29,9 @@ class Customer extends Model
     {
         return $this->hasOne(KycForm::class);
     }
+    
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
+    }
 }

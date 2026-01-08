@@ -13,20 +13,30 @@ class BranchController extends Controller
     {
         return response()->json(Branch::with('manager')->get());
     }
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'branch_name' => 'required',
+        'location' => 'required',
+        'contact' => 'nullable'
+    ]);
 
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'branch_name' => 'required',
-            'location' => 'required',
-            'manager_id' => 'nullable|exists:users,id',
-            'contact' => 'nullable'
-        ]);
+    // Assign a manager automatically: pick the first user with role 'branch-manager'
+    $manager = \App\Models\User::whereHas('role', function($q) {
+        $q->where('slug', 'branch-manager');
+    })->first();
 
-        $branch = Branch::create($validated);
-
-        return response()->json($branch, 201);
+    if (!$manager) {
+        return response()->json(['message' => 'No branch manager found'], 422);
     }
+
+    $validated['manager_id'] = $manager->id;
+
+    $branch = Branch::create($validated);
+
+    return response()->json($branch, 201);
+}
+
 
     public function show($id)
     {

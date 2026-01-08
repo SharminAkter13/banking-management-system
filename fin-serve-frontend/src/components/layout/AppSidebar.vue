@@ -32,9 +32,8 @@
               <HorizontalDots v-else />
             </h2>
             <ul class="flex flex-col gap-4">
-              <li v-for="(item, index) in menuGroup.items" :key="item.name">
+              <li v-for="item in menuGroup.items" :key="item.name">
                 <router-link
-                  v-if="item.path"
                   :to="item.path"
                   :class="['menu-item group', { 'menu-item-active': isActive(item.path), 'menu-item-inactive': !isActive(item.path) }]"
                 >
@@ -67,19 +66,20 @@ const route = useRoute();
 const { isExpanded, isMobileOpen, isHovered } = useSidebar();
 const userRole = ref("");
 
-// Fetch role once on mount to ensure menu items filter correctly
+// Fetch role once on mount
 onMounted(async () => {
   const token = localStorage.getItem('token');
   if (token) {
     try {
       const response = await api.get('/me');
-      userRole.value = response.data.role.slug; // Assuming slug is 'admin', 'branch-manager', etc.
+      userRole.value = response.data.role.slug; 
     } catch (error) {
       userRole.value = "";
     }
   }
 });
 
+// Logic matches the DashboardRoot logic in index.js
 const getDashboardPath = computed(() => {
   const pathMap = {
     'admin': '/admin/dashboard',
@@ -88,7 +88,7 @@ const getDashboardPath = computed(() => {
     'bank-teller': '/teller/dashboard',
     'customer': '/customer/dashboard'
   }
-  return pathMap[userRole.value] || '/dashboard';
+  return pathMap[userRole.value] || '/login';
 });
 
 const menuGroups = computed(() => [
@@ -110,7 +110,7 @@ const menuGroups = computed(() => [
         icon: UserCircleIcon,
         name: "Customers",
         path: "/admin/customers",
-        roles: ['admin', 'branch-manager']
+        roles: ['admin'] // Note: index.js only lists 'admin' for customers
       },
       {
         icon: UserCircleIcon,
@@ -128,56 +128,57 @@ const menuGroups = computed(() => [
         icon: UserCircleIcon,
         name: "Loans",
         path: "/admin/loans",
-        roles: ['admin', 'branch-manager','loan-officer'] // Adding loan management to the sidebar
+        roles: ['admin', 'branch-manager', 'loan-officer', 'customer']
       },
-       {
+      {
         icon: UserCircleIcon,
         name: "Loan Types",
         path: "/admin/loan-types",
-        roles: ['admin', 'branch-manager','loan-officer'] // Adding loan management to the sidebar
+        roles: ['admin', 'branch-manager', 'loan-officer']
       },
       {
         icon: UserCircleIcon,
         name: "Loan Payments",
         path: "/customer/loan-payments",
-        roles: ['admin', 'branch-manager','loan-officer','customer'] // Adding loan management to the sidebar
+        roles: ['admin', 'branch-manager', 'loan-officer', 'customer']
       },
       {
-  icon: UserCircleIcon, 
-  name: 'Transactions', 
-  path: '/admin/transactions',
-  roles: ['admin','bank-teller','branch-manager']
-},
-{
-  icon: UserCircleIcon,
-  name: "Installments",
-  path: "/loan/installments",
-  roles: ['admin','branch-manager','loan-officer','customer']
-},
- {
+        icon: UserCircleIcon, 
+        name: 'Transactions', 
+        path: '/admin/transactions',
+        roles: ['admin', 'bank-teller', 'branch-manager', 'customer']
+      },
+      {
+        icon: UserCircleIcon,
+        name: "Installments",
+        path: "/loan/installments",
+        roles: ['admin', 'branch-manager', 'loan-officer', 'customer']
+      },
+      {
         icon: UserCircleIcon,
         name: "Interest Rates",
         path: "/admin/interest-rates",
-        roles: ['admin', 'branch-manager']  // Only admin & branch manager can see
+        roles: ['admin', 'branch-manager']
       },
       {
-  icon: UserCircleIcon,
-  name: 'Approvals',
-  path: '/admin/approvals',
-  roles: ['admin','branch-manager','loan-officer','bank-teller']
-}
-
-
+        icon: UserCircleIcon,
+        name: 'Approvals',
+        path: '/admin/approvals',
+        roles: ['admin', 'branch-manager', 'loan-officer', 'bank-teller']
+      }
     ],
   },
 ]);
 
 const isActive = (path) => route.path === path;
 
+// Filtering logic ensures sidebar only shows items matching the user's role slug
 const filteredMenuGroups = computed(() => {
   return menuGroups.value.map(group => {
     const filteredItems = group.items.filter(item => {
+      // If no roles specified, it's public/universal (like Dashboard)
       if (!item.roles) return true;
+      // Check if current user role slug exists in the item's role array
       return item.roles.includes(userRole.value);
     });
     return { ...group, items: filteredItems };
