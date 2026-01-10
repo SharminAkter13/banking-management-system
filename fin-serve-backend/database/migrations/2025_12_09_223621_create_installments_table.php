@@ -16,6 +16,7 @@ return new class extends Migration
         $table->foreignId('loan_id')->constrained('loans','id')->cascadeOnDelete();
         $table->date('due_date');
         $table->decimal('amount_due', 12, 2);
+        $table->decimal('emi_amount', 15, 2)->nullable();
         $table->decimal('amount_paid', 12, 2)->nullable();
         $table->enum('status', ['Pending','Paid','Overdue'])->default('Pending');
         $table->timestamps();

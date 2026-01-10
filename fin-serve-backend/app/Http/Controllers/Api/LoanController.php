@@ -8,136 +8,130 @@ use App\Models\Approval;
 use App\Models\ApprovalStep;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB; // Added missing import
 use Carbon\Carbon;
 
 class LoanController extends Controller
 {
-    // =========================
-    // LIST ALL LOANS
-    // =========================
     public function index()
     {
         return response()->json(
-Loan::with(['customer','branch','loanType','installments','approval.steps.role'])->latest()->get()
+            Loan::with(['customer', 'branch', 'loanType', 'installments', 'approval.steps.role'])
+                ->latest()
+                ->get()
         );
     }
 
-    // =========================
-    // CREATE LOAN + EMI SCHEDULE + APPROVAL
-    // =========================
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'customer_id' => 'required|exists:customers,id',
-            'branch_id' => 'required|exists:branches,id',
-            'loan_type_id' => 'required|exists:loan_types,id',
+        $request->validate([
+            'customer_id'      => 'required|exists:customers,id',
+            'branch_id'        => 'required|exists:branches,id',
+            'loan_type_id'     => 'required|exists:loan_types,id',
             'principal_amount' => 'required|numeric|min:1',
-            'interest_rate' => 'required|numeric|min:0',
-            'duration_months' => 'required|integer|min:1'
+            'interest_rate'    => 'required|numeric|min:0',
+            'duration_months'  => 'required|integer|min:1',
+            'issued_date'      => 'nullable|date',
+            'status'           => 'required|string',
         ]);
 
-        // =========================
-        // EMI Calculation
-        // =========================
-        $P = $validated['principal_amount'];
-        $annualRate = $validated['interest_rate'];
-        $n = $validated['duration_months'];
-        $r = ($annualRate / 12) / 100;
+        DB::beginTransaction();
 
-        $emi = $r > 0 ? $P * $r * pow(1 + $r, $n) / (pow(1 + $r, $n) - 1) : $P / $n;
-        $emi = round($emi, 2);
-        $totalPayable = round($emi * $n, 2);
+        try {
+            // EMI CALCULATION (Simple Interest Approach)
+            $principal = $request->principal_amount;
+            $rate = $request->interest_rate / 100;
+            $months = $request->duration_months;
 
-        // =========================
-        // Create Loan
-        // =========================
-        $loan = Loan::create([
-            'customer_id' => $validated['customer_id'],
-            'branch_id' => $validated['branch_id'],
-            'loan_type_id' => $validated['loan_type_id'],
-            'principal_amount' => $P,
-            'interest_rate' => $annualRate,
-            'emi_amount' => $emi,
-            'total_payable' => $totalPayable,
-            'remaining_balance' => $totalPayable,
-            'duration_months' => $n,
-            'issued_date' => now(),
-            'status' => 'Pending'
-        ]);
+            $totalPayable = $principal + ($principal * $rate);
+            $emiAmount = round($totalPayable / $months, 2);
+            $startDate = $request->issued_date ? Carbon::parse($request->issued_date) : Carbon::now();
 
-        // =========================
-        // Create Installments
-        // =========================
-        $startDate = Carbon::now();
-        for ($i = 1; $i <= $n; $i++) {
-            Installment::create([
-                'loan_id' => $loan->id,
-                'due_date' => $startDate->copy()->addMonths($i),
-                'amount_due' => $emi,
-                'status' => 'Pending'
+            $loan = Loan::create([
+                'customer_id'       => $request->customer_id,
+                'branch_id'         => $request->branch_id,
+                'loan_type_id'      => $request->loan_type_id,
+                'principal_amount'  => $principal,
+                'interest_rate'     => $request->interest_rate,
+                'emi_amount'        => $emiAmount,
+                'total_payable'     => $totalPayable,
+                'remaining_balance' => $totalPayable,
+                'issued_date'       => $startDate->toDateString(),
+                'duration_months'   => $months,
+                'status'            => $request->status,
             ]);
-        }
 
-        // =========================
-        // Optional: Create Approval Flow
-        // =========================
-        $approval = Approval::create([
-            'entity_type' => 'loan',
-            'entity_id' => $loan->id,
-            'created_by' => auth()->id() ?? 1, // fallback admin
-            'status' => 'Pending'
-        ]);
+            // CREATE APPROVAL FLOW
+            $approval = Approval::create([
+                'entity_type'  => 'loan',
+                'entity_id'    => $loan->id,
+                'current_step' => 1,
+                'status'       => 'Pending',
+                'created_by'   => auth()->id() ?? 1,
+            ]);
 
-        $roles = ['loan-officer','branch-manager','admin'];
-        $stepNumber = 1;
-        foreach ($roles as $roleSlug) {
-            $role = \App\Models\Role::where('slug', $roleSlug)->first();
-            if ($role) {
+            $roles = [2, 1]; // Branch Manager, Admin
+            foreach ($roles as $index => $roleId) {
                 ApprovalStep::create([
                     'approval_id' => $approval->id,
-                    'step_number' => $stepNumber++,
-                    'role_id' => $role->id,
-                    'status' => 'Pending',
-                    'required' => true
+                    'step_number' => $index + 1,
+                    'role_id'     => $roleId,
+                    'status'      => 'Pending',
+                    'required'    => true,
                 ]);
             }
-        }
 
-        return response()->json($loan, 201);
+            // CREATE INSTALLMENTS
+            for ($i = 1; $i <= $months; $i++) {
+                Installment::create([
+                    'loan_id'     => $loan->id,
+                    'due_date'    => (clone $startDate)->addMonths($i)->toDateString(),
+                    'amount_due'  => $emiAmount,
+                    'emi_amount'  => $emiAmount,
+                    'amount_paid' => 0,
+                    'status'      => 'Pending',
+                ]);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Loan created successfully',
+                'loan'    => $loan->load('installments')
+            ], 201);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Loan creation failed',
+                'error'   => $e->getMessage()
+            ], 500);
+        }
     }
 
-    // =========================
-    // SHOW LOAN DETAILS + INSTALLMENTS
-    // =========================
     public function show($id)
     {
         return response()->json(
-            Loan::with(['customer','branch','loanType','installments'])->findOrFail($id)
+            Loan::with(['customer', 'branch', 'loanType', 'installments'])->findOrFail($id)
         );
     }
 
-    // =========================
-    // UPDATE STATUS ONLY
-    // =========================
     public function update(Request $request, $id)
     {
         $loan = Loan::findOrFail($id);
-
         $validated = $request->validate([
-            'status' => 'in:Pending,Active,Closed,Rejected,Defaulted'
+            'status' => 'required|in:Pending,Active,Closed,Rejected,Defaulted'
         ]);
 
         $loan->update($validated);
-
         return response()->json($loan);
     }
 
-    // =========================
-    // DELETE LOAN
-    // =========================
     public function destroy($id)
     {
-        Loan::findOrFail($id)->delete();
+        $loan = Loan::findOrFail($id);
+        // Optional: Only allow deletion if loan is still 'Pending'
+        $loan->delete();
         return response()->json(['message' => 'Deleted']);
     }
 }

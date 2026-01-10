@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\AccountController;
 use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Api\LoanController;
 use App\Http\Controllers\Api\InstallmentController;
+use App\Http\Controllers\Api\InstallmentPaymentController;
 use App\Http\Controllers\Api\LoanPaymentController;
 use App\Http\Controllers\Api\LoanTypeController;
 

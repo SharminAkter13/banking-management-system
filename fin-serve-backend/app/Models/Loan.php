@@ -6,10 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Loan extends Model
 {
-    protected $fillable = [
-        'customer_id','branch_id','loan_type_id','principal_amount',
-        'issued_date','duration_months','status'
-    ];
+   protected $fillable = [
+    'customer_id',
+    'branch_id',
+    'loan_type_id',
+    'principal_amount',
+    'interest_rate',
+    'emi_amount',
+    'total_payable',
+    'remaining_balance',
+    'duration_months',
+    'issued_date',
+    'status'
+];
+
 
     public function customer()
     {
