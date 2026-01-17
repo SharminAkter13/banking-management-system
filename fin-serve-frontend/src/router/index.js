@@ -101,6 +101,26 @@ const router = createRouter({
       meta: { title: 'Edit User', requiresAuth: true, roles: ['admin'] }
     },
 
+// ================= Account Management =================
+{
+      path: '/admin/types',
+      name: 'AccountTypeManager',
+      component: () => import('@/views/accounts/AccountTypeManager.vue'),
+      meta: { title: 'Account Types', requiresAuth: true, roles: ['admin'] }
+    },
+    {
+      path: '/admin/status',
+      name: 'AccountStatusManager',
+      component: () => import('@/views/accounts/AccountStatusManager.vue'),
+      meta: { title: 'Account Status', requiresAuth: true, roles: ['admin'] }
+    },
+     {
+      path: '/accounts',
+      name: 'AccountManager',
+      component: () => import('@/views/accounts/AccountManager.vue'),
+      meta: { title: 'Accounts', requiresAuth: true, roles: ['admin', 'branch-manager','loan-officer','bank-teller','customer'] }
+    },
+    
     // ================= Customer Management =================
     {
       path: '/admin/customers',

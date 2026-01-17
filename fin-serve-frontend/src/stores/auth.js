@@ -1,39 +1,48 @@
 import { defineStore } from 'pinia'
-import api from '@/services/api' 
+import api from '@/services/api'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    user: null,
-    token: localStorage.getItem('token'),
+    user: JSON.parse(localStorage.getItem('user')) || null,
+    token: localStorage.getItem('token') || null,
   }),
 
   getters: {
-    role: (state) => state.user?.role?.slug,
+    // Get user role
+   role: (state) => state.user?.role?.slug || null,
+    // Check if user is logged in
     isAuthenticated: (state) => !!state.token,
   },
 
   actions: {
-    // 1. Corrected 'sync' to 'async'
+    // Fetch current user from API
     async fetchUser() {
       try {
-        const response = await api.get('/me') 
+        const response = await api.get('/me') // your /me endpoint
         this.user = response.data
+        localStorage.setItem('user', JSON.stringify(this.user))
       } catch (error) {
         this.user = null
-        // If 401, you might want to clear token: localStorage.removeItem('token')
-        console.error("Failed to fetch user:", error)
+        this.token = null
+        localStorage.removeItem('user')
+        localStorage.removeItem('token')
+        console.error('Failed to fetch user:', error)
       }
-    }, // 2. Added comma here
+    },
 
+    // Save user and token on login
     login(data) {
       this.user = data.user
       this.token = data.token
       localStorage.setItem('token', data.token)
+      localStorage.setItem('user', JSON.stringify(data.user))
     },
 
+    // Logout user
     logout() {
       this.user = null
       this.token = null
+      localStorage.removeItem('user')
       localStorage.removeItem('token')
     },
   },

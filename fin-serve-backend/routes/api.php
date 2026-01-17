@@ -14,6 +14,8 @@ use App\Http\Controllers\Api\KYCFormController;
 
 // Banking API Controllers
 use App\Http\Controllers\Api\AccountController;
+use App\Http\Controllers\Api\AccountTypeController;
+use App\Http\Controllers\Api\AccountStatusController;
 use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Api\LoanController;
 use App\Http\Controllers\Api\InstallmentController;
@@ -64,7 +66,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // 2. Banking Resources
     Route::apiResource('accounts', AccountController::class); // Matches accounts table
     Route::apiResource('transactions', TransactionController::class); // Matches transactions table
-    
+    Route::apiResource('account-types', AccountTypeController::class);
+    Route::apiResource('account-statuses', AccountStatusController::class);
+
     // 3. Loan Management
     Route::apiResource('loans', LoanController::class); // Matches loans table
     Route::apiResource('installments', InstallmentController::class)->only(['index','show']);

@@ -24,7 +24,7 @@ class Account extends Model
 
     public function accountType()
     {
-        return $this->belongsTo(AccountType::class);
+        return $this->belongsTo(AccountTypes::class);
     }
 
     public function status()

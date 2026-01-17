@@ -106,6 +106,24 @@ const menuGroups = computed(() => [
         path: "/admin/users",
         roles: ['admin']
       },
+       {
+        icon: UserCircleIcon,
+        name: "Account Types",
+        path: "/admin/types",
+        roles: ['admin']
+      },
+       {
+        icon: UserCircleIcon,
+        name: "Account Status",
+        path: "/admin/status",
+        roles: ['admin']
+      },
+      {
+        icon: UserCircleIcon,
+        name: "Accounts ",
+        path: "/accounts",
+        roles: ['admin', 'branch-manager','loan-officer','bank-teller','customer']
+      },
       {
         icon: UserCircleIcon,
         name: "Customers",
