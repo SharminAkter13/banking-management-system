@@ -117,6 +117,12 @@
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
                 <button
+                  @click="viewDetails(account)"
+                  class="text-blue-600 hover:text-blue-900 font-medium"
+                >
+                  View
+                </button>
+                <button
                   v-if="auth.role === 'admin'"
                   @click="edit(account)"
                   class="text-yellow-600 hover:text-yellow-900 font-medium"
@@ -142,6 +148,55 @@
         </table>
       </div>
     </div>
+    <div v-if="isViewModalOpen" class="fixed inset-0 z-50 overflow-y-auto">
+  <div class="fixed inset-0 bg-black opacity-50" @click="closeViewModal"></div>
+
+  <div class="relative min-h-screen flex items-center justify-center p-4">
+    <div class="relative bg-white rounded-lg shadow-xl max-w-2xl w-full p-6">
+      <div class="flex justify-between items-center border-b pb-3 mb-4">
+        <h3 class="text-xl font-bold text-gray-900">Account Details</h3>
+        <button @click="closeViewModal" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="space-y-2">
+          <h4 class="font-bold text-blue-700 uppercase text-xs tracking-wider">Customer Information</h4>
+          <p><span class="text-gray-500">Name:</span> {{ selectedAccount.customer?.first_name }} {{ selectedAccount.customer?.last_name }}</p>
+          <p><span class="text-gray-500">Email:</span> {{ selectedAccount.customer?.email }}</p>
+          <p><span class="text-gray-500">Phone:</span> {{ selectedAccount.customer?.phone }}</p>
+          <p><span class="text-gray-500">ID Number:</span> {{ selectedAccount.customer?.id_number }}</p>
+          <p><span class="text-gray-500">Address:</span> {{ selectedAccount.customer?.address }}</p>
+        </div>
+
+        <div class="space-y-2">
+          <h4 class="font-bold text-blue-700 uppercase text-xs tracking-wider">Account Information</h4>
+          <p><span class="text-gray-500">Type:</span> {{ selectedAccount.account_type?.account_name }}</p>
+          <p><span class="text-gray-500">Status:</span> {{ selectedAccount.status?.name }}</p>
+          <p><span class="text-gray-500">Current Balance:</span> ${{ parseFloat(selectedAccount.balance).toLocaleString() }}</p>
+          <p><span class="text-gray-500">Opened On:</span> {{ selectedAccount.opened_date }}</p>
+          <p v-if="selectedAccount.closed_date"><span class="text-gray-500">Closed On:</span> {{ selectedAccount.closed_date }}</p>
+        </div>
+
+        <div class="md:col-span-2 space-y-2 border-t pt-4">
+          <h4 class="font-bold text-blue-700 uppercase text-xs tracking-wider">Branch Details</h4>
+          <div class="grid grid-cols-2">
+            <p><span class="text-gray-500">Branch Name:</span> {{ selectedAccount.branch?.branch_name }}</p>
+            <p><span class="text-gray-500">Location:</span> {{ selectedAccount.branch?.location }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 flex justify-end">
+        <button 
+          @click="closeViewModal"
+          class="bg-gray-200 text-gray-800 px-6 py-2 rounded hover:bg-gray-300 transition"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
   </AdminLayout>
 </template>
 
@@ -278,5 +333,18 @@ const reset = () => {
     opened_date: "",
     closed_date: ""
   };
+};
+
+const isViewModalOpen = ref(false);
+const selectedAccount = ref(null);
+
+const viewDetails = (account) => {
+  selectedAccount.value = account;
+  isViewModalOpen.value = true;
+};
+
+const closeViewModal = () => {
+  isViewModalOpen.value = false;
+  selectedAccount.value = null;
 };
 </script>
